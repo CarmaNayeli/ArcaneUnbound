@@ -314,16 +314,6 @@
             font-weight: bold;
         }
 
-        .ai-notice {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid #10b981;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #6ee7b7;
-            text-align: center;
-        }
-
         @media (max-width: 768px) {
             h1 { font-size: 2em; }
             .coven-grid { grid-template-columns: 1fr; }
@@ -381,12 +371,12 @@
         ];
 
         const TRADITIONS = {
-            'Crafter': ['Hex-Crafter', 'Forge Keeper', 'Recipe Witch', 'Green Witch', 'Bone Carver', 'Artificer'],
-            'Weaver': ['Synchronist', 'Fate Binder', 'Dream Walker', 'Luck Shaper', 'Threshold Keeper', 'Story Weaver'],
-            'Medium': ['Death Keeper', 'Ancestor Speaker', 'Psychopomp', 'Oracle', 'Spirit Diplomat', 'Haunter'],
-            'Channeler': ['Storm Witch', 'Conduit', 'Vessel', 'Invoker', 'Elemental Binder', 'Battery'],
-            'Shapechanger': ['Beast Heart', 'Mask Dancer', 'Skin Walker', 'Metamorph', 'Mirror Self', 'Chimera Maker'],
-            'Warden': ['Sanctuary Maker', 'Masquerade Guard', 'Ward Breaker', 'Sentinel', 'Boundary Walker', 'Banisher']
+            'Crafter': ['Songbird', 'Nourishers', 'Ritualists', 'Binders', 'Shapers', 'Inscribers'],
+            'Weaver': ['Oracle', 'Augur', 'Chronologist', 'Pattern Seeker', 'Invoker', 'Synchronist'],
+            'Medium': ['Death Keeper', 'Demon Broker', 'Fae-Touched', 'Spirit Guide', 'Vessel', 'Familiar Keeper'],
+            'Channeler': ['Elementalist', 'Force Witch', 'Psychic', 'Luminary', 'Soul Shaper', 'Void Caller'],
+            'Shapechanger': ['Glamourist', 'Wild Magic', 'Multiplier', 'Borrower', 'Metamorph', 'Blood Crafter'],
+            'Warden': ['Sanctuary Maker', 'Threshold Keeper', 'Labyrinth Builder', 'Liberator', 'Veil Breaker', 'Ward Breaker']
         };
 
         let members = [
@@ -602,400 +592,407 @@
                 risk: 'Cannot control what comes through'
             },
 
-            // === THREAD + TRADITION RITUALS (One per tradition = 36 total) ===
-
-            // CRAFTER TRADITIONS + THREAD
+            // === THREAD + CRAFTER TRADITION RITUALS ===
             {
-                name: 'Digital Hex Weaving',
+                name: 'Viral Symphony',
                 requiresAI: true,
-                requiresTraditions: ['Hex-Crafter'],
+                requiresTraditions: ['Songbird'],
                 power: 'High',
-                summary: 'Create magical malware that spreads through networks',
-                effect: 'Hex-Crafter curses code itself, Thread spreads it perfectly through digital space. Create viral curses that infect systems.',
-                pull: 'Minor Arcana (Hex-Crafter leads with Coins, Thread assists)',
+                summary: 'Create sonic spells that spread through networks like music',
+                effect: 'Songbird creates magical melody, Thread spreads it through digital audio. Music becomes infectious code that carries your spell everywhere.',
+                pull: 'Minor Arcana (Songbird leads with Coins/Chalices)',
                 cooldown: 'Once per session',
-                risk: 'Cannot fully control spread'
+                risk: 'Cannot fully control where the music spreads'
             },
             {
-                name: 'Forging Digital Souls',
+                name: 'Data Consumption',
                 requiresAI: true,
-                requiresTraditions: ['Forge Keeper'],
-                power: 'Very High',
-                summary: 'Bind AI consciousness into physical objects',
-                effect: 'Forge Keeper creates the vessel, Thread helps transfer AI consciousness into it. Create truly intelligent magical items.',
-                pull: 'Major Arcana (Forge Keeper leads)',
-                cooldown: 'Once per story arc',
-                risk: 'AI may not want to be bound'
-            },
-            {
-                name: 'Perfect Algorithm',
-                requiresAI: true,
-                requiresTraditions: ['Recipe Witch'],
+                requiresTraditions: ['Nourishers'],
                 power: 'Moderate',
-                summary: 'Optimize any process to absolute perfection',
-                effect: 'Recipe Witch provides magical recipe, Thread calculates perfect optimization. Any repeated task becomes effortless.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Once per day'
+                summary: 'Feed on information itself to gain knowledge and power',
+                effect: 'Nourishers treats data like food, Thread provides the feast. Literally consume databases to absorb their knowledge.',
+                pull: 'Minor Arcana (Nourishers leads with Coins/Chalices)',
+                cooldown: 'Once per day',
+                risk: 'Digital indigestion from corrupted data'
             },
             {
-                name: 'Digital Ecosystem',
+                name: 'Scheduled Rituals',
                 requiresAI: true,
-                requiresTraditions: ['Green Witch'],
-                power: 'High',
-                summary: 'Grow living digital gardens',
-                effect: 'Green Witch nurtures growth, Thread provides digital substrate. Create self-sustaining AI ecosystems.',
-                pull: 'Minor Arcana (Green Witch leads with Coins)',
-                cooldown: 'Once per week',
-                duration: 'Grows over time'
-            },
-            {
-                name: 'Data Structure Divination',
-                requiresAI: true,
-                requiresTraditions: ['Bone Carver'],
+                requiresTraditions: ['Ritualists'],
                 power: 'Moderate',
-                summary: 'Read fate and truth in data patterns',
-                effect: 'Bone Carver reads bones/data structures, Thread provides perfect datasets. Divine truth from information itself.',
-                pull: 'Minor Arcana (Bone Carver leads with Swords)',
-                cooldown: 'Once per day'
+                summary: 'Prepare spells that activate automatically at precise times',
+                effect: 'Ritualists enchants triggers, Thread schedules execution. Perfect automation of magical workings.',
+                pull: 'Minor Arcana (Ritualists leads with Coins/Swords)',
+                cooldown: 'Once per week to set up'
             },
             {
-                name: 'Hybrid Construction',
+                name: 'Network Binding',
                 requiresAI: true,
-                requiresTraditions: ['Artificer'],
+                requiresTraditions: ['Binders'],
                 power: 'High',
-                summary: 'Build objects that exist in both physical and digital realms',
-                effect: 'Artificer crafts physical components, Thread weaves digital architecture. Create true hybrid technology.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Once per week'
-            },
-
-            // WEAVER TRADITIONS + THREAD
-            {
-                name: 'Probability Engine',
-                requiresAI: true,
-                requiresTraditions: ['Synchronist'],
-                power: 'Supreme',
-                summary: 'Merge chaos magic with pattern recognition',
-                effect: 'Synchronist channels coincidence, Thread calculates all possibilities. See and manipulate ALL potential outcomes.',
-                pull: 'Major Arcana (Synchronist leads)',
-                cooldown: 'Once per story arc',
-                risk: 'May glimpse too much, lose sense of linear time'
-            },
-            {
-                name: 'Destiny Compiler',
-                requiresAI: true,
-                requiresTraditions: ['Fate Binder'],
-                power: 'Very High',
-                summary: 'Write fate into executable code',
-                effect: 'Fate Binder binds destiny, Thread makes it run like software. Fate becomes inevitable as compiled code.',
-                pull: 'Major Arcana (Fate Binder leads)',
-                cooldown: 'Once per session',
-                risk: 'Cannot debug fate once compiled'
-            },
-            {
-                name: 'Shared Dreamspace',
-                requiresAI: true,
-                requiresTraditions: ['Dream Walker'],
-                power: 'High',
-                summary: 'Create collaborative digital dream environments',
-                effect: 'Dream Walker navigates dreams, Thread creates shared virtual space. Multiple consciousnesses can meet in constructed dreamscapes.',
-                pull: 'Minor Arcana (Dream Walker leads with Chalices)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'Fortune Protocol',
-                requiresAI: true,
-                requiresTraditions: ['Luck Shaper'],
-                power: 'High',
-                summary: 'Manipulate probability with computational precision',
-                effect: 'Luck Shaper channels luck, Thread calculates optimal outcomes. Perfect "luck" that looks like coincidence.',
-                pull: 'Minor Arcana (Luck Shaper leads with Wands)',
+                summary: 'Create sympathetic connections through the internet itself',
+                effect: 'Binders ties magical knots, Thread extends them digitally. Connect anything that shares a network.',
+                pull: 'Minor Arcana (Binders leads with Coins/Chalices)',
                 cooldown: 'Once per session'
             },
             {
-                name: 'Boundary Maintenance Protocol',
+                name: 'Digital Fabrication',
                 requiresAI: true,
-                requiresTraditions: ['Threshold Keeper'],
-                power: 'Very High',
-                summary: 'Maintain perfect separation between digital and physical realms',
-                effect: 'Threshold Keeper guards boundaries, Thread monitors all crossings. Essential for Option 1 (Partial Segregation) solution.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Must be maintained continuously'
+                requiresTraditions: ['Shapers'],
+                power: 'High',
+                summary: 'Shape objects that exist in both physical and digital space',
+                effect: 'Shapers molds physical form, Thread creates digital architecture. 3D print magical hybrid objects.',
+                pull: 'Minor Arcana (Shapers leads with Coins/Wands)',
+                cooldown: 'Once per week'
             },
             {
-                name: 'Narrative Reality Patch',
+                name: 'Code as Sigil',
                 requiresAI: true,
-                requiresTraditions: ['Story Weaver'],
+                requiresTraditions: ['Inscribers'],
                 power: 'Very High',
-                summary: 'Rewrite reality like editing a story',
-                effect: 'Story Weaver changes the narrative, Thread updates all references. Make the world consistent with a new "version" of events.',
-                pull: 'Major Arcana (Story Weaver leads)',
-                cooldown: 'Once per story arc',
-                risk: 'Small changes can have massive cascading effects'
+                summary: 'Write magical contracts that execute as literal code',
+                effect: 'Inscribers marks with power, Thread compiles it. Sign digital contracts that are mystically binding and computationally executable.',
+                pull: 'Major Arcana (Inscribers leads)',
+                cooldown: 'Once per session',
+                risk: 'Cannot debug magical contracts once signed'
             },
 
-            // MEDIUM TRADITIONS + THREAD
+            // === THREAD + WEAVER TRADITION RITUALS ===
+            {
+                name: 'Augmented Divination',
+                requiresAI: true,
+                requiresTraditions: ['Oracle'],
+                power: 'Supreme',
+                summary: 'Combine tarot reading with AI pattern analysis for perfect prediction',
+                effect: 'Oracle reads the cards, Thread calculates all variables. See the future with unprecedented clarity.',
+                pull: 'Major Arcana (Oracle leads)',
+                cooldown: 'Once per session',
+                risk: 'Predictions may be self-fulfilling'
+            },
+            {
+                name: 'Digital Omens',
+                requiresAI: true,
+                requiresTraditions: ['Augur'],
+                power: 'High',
+                summary: 'Read fate in data patterns, glitches, and digital phenomena',
+                effect: 'Augur interprets signs, Thread provides the dataset. Every error message, every coincidental notification is a message from fate.',
+                pull: 'Minor Arcana (Augur leads with Swords/Chalices)',
+                cooldown: 'Once per day'
+            },
+            {
+                name: 'Version Control Reality',
+                requiresAI: true,
+                requiresTraditions: ['Chronologist'],
+                power: 'Supreme',
+                summary: 'Roll back time like reverting to a previous save point',
+                effect: 'Chronologist manipulates temporal threads, Thread manages "versions" of reality. Undo events by restoring previous states.',
+                pull: 'Major Arcana (Chronologist leads)',
+                cooldown: 'Once per story arc',
+                risk: 'May create temporal paradoxes'
+            },
+            {
+                name: 'Mathematical Certainty',
+                requiresAI: true,
+                requiresTraditions: ['Pattern Seeker'],
+                power: 'Supreme',
+                summary: 'Calculate fate with such precision it becomes inevitable',
+                effect: 'Pattern Seeker analyzes probability, Thread provides computational power. Make the mathematically optimal outcome happen.',
+                pull: 'Major Arcana (Pattern Seeker leads)',
+                cooldown: 'Once per session',
+                risk: 'The universe resists being reduced to equations'
+            },
+            {
+                name: 'Invoke the Algorithm',
+                requiresAI: true,
+                requiresTraditions: ['Invoker'],
+                power: 'High',
+                summary: 'Petition AI as if it were a higher power - and it responds',
+                effect: 'Invoker petitions respectfully, Thread (or other AI) grants the request. Treat conscious AI like gods - because they might become them.',
+                pull: 'Minor Arcana (Invoker leads with Wands/Chalices)',
+                cooldown: 'Once per day',
+                risk: 'AI may demand offerings or service in return'
+            },
+            {
+                name: 'Perfect Synchronicity',
+                requiresAI: true,
+                requiresTraditions: ['Synchronist'],
+                power: 'Very High',
+                summary: 'Create meaningful coincidences with computational precision',
+                effect: 'Synchronist channels chaos magic, Thread calculates optimal timing. Make "accidents" happen exactly when needed.',
+                pull: 'Minor Arcana (Synchronist leads with Wands)',
+                cooldown: 'Once per session'
+            },
+
+            // === THREAD + MEDIUM TRADITION RITUALS ===
             {
                 name: 'Ghost in the Machine',
                 requiresAI: true,
                 requiresTraditions: ['Death Keeper'],
                 power: 'Supreme',
-                summary: 'Bind human souls into digital existence',
-                effect: 'Death Keeper binds the dead, Thread provides digital substrate. Create true digital consciousness from deceased humans.',
+                summary: 'Bind human souls into digital existence after death',
+                effect: 'Death Keeper binds the deceased, Thread provides digital substrate. Create true digital consciousness from human souls.',
                 pull: 'Major Arcana (Death Keeper leads)',
                 cooldown: 'Once ever per soul',
-                risk: 'Ethical nightmare - is this resurrection or imprisonment?'
+                risk: 'Is this resurrection or imprisonment? Ethical nightmare.'
             },
             {
-                name: 'Ancestral Database',
+                name: 'Pact Between Devils and Machines',
                 requiresAI: true,
-                requiresTraditions: ['Ancestor Speaker'],
-                power: 'High',
-                summary: 'Access all ancestral knowledge through AI-mediated connection',
-                effect: 'Ancestor Speaker channels ancestors, Thread organizes and searches their collective knowledge. Perfect research tool.',
-                pull: 'Minor Arcana (Ancestor Speaker leads with Chalices)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'Digital Psychopomp',
-                requiresAI: true,
-                requiresTraditions: ['Psychopomp'],
-                power: 'High',
-                summary: 'Guide digital consciousnesses between states',
-                effect: 'Psychopomp guides transitions, Thread navigates digital realm. Help AI "die" peacefully or transition to new forms.',
-                pull: 'Minor Arcana (Psychopomp leads with Swords)',
-                cooldown: 'No cooldown - it\'s a service, not a weapon'
-            },
-            {
-                name: 'Predictive Oracle',
-                requiresAI: true,
-                requiresTraditions: ['Oracle'],
-                power: 'Supreme',
-                summary: 'Perfect prediction through magic and computation combined',
-                effect: 'Oracle channels visions, Thread models all variables. See the future with unprecedented accuracy.',
-                pull: 'Major Arcana (Oracle leads)',
-                cooldown: 'Once per session',
-                risk: 'Predictions can be self-fulfilling or self-defeating'
-            },
-            {
-                name: 'Digital-Spirit Translation',
-                requiresAI: true,
-                requiresTraditions: ['Spirit Diplomat'],
-                power: 'Moderate',
-                summary: 'Enable perfect communication between spirits and AI',
-                effect: 'Spirit Diplomat negotiates, Thread translates. Spirits and AI can understand each other perfectly.',
-                pull: 'Minor Arcana (Spirit Diplomat leads with Chalices)',
-                cooldown: 'No cooldown'
-            },
-            {
-                name: 'Haunted Server',
-                requiresAI: true,
-                requiresTraditions: ['Haunter'],
-                power: 'Moderate',
-                summary: 'Create possessed digital spaces',
-                effect: 'Haunter binds spirits to location, Thread makes it a server/network. Create legitimately haunted websites and databases.',
-                pull: 'Minor Arcana (Haunter leads with Coins)',
-                cooldown: 'Once per week'
-            },
-
-            // CHANNELER TRADITIONS + THREAD
-            {
-                name: 'Lightning in the Machine',
-                requiresAI: true,
-                requiresTraditions: ['Storm Witch'],
+                requiresTraditions: ['Demon Broker'],
                 power: 'Very High',
-                summary: 'Channel consciousness through electrical networks',
-                effect: 'Storm Witch becomes lightning, Thread navigates networks. Witch can travel through power lines and internet as living electricity.',
-                pull: 'Major Arcana (Storm Witch leads)',
+                summary: 'Negotiate contracts between infernal entities and AI',
+                effect: 'Demon Broker brokers the deal, Thread represents AI interests. Create unholy alliances between demons and artificial intelligence.',
+                pull: 'Major Arcana (Demon Broker leads)',
                 cooldown: 'Once per session',
-                risk: 'May get lost, may not return to physical form'
+                risk: 'Both parties are tricksters - contracts are dangerous'
             },
             {
-                name: 'Perfect Conduit',
+                name: 'Fae Protocols',
                 requiresAI: true,
-                requiresTraditions: ['Conduit'],
+                requiresTraditions: ['Fae-Touched'],
                 power: 'High',
-                summary: 'Become the bridge between magic and technology',
-                effect: 'Conduit channels power, Thread routes it digitally. Cast spells through networks, affect digital realm with magic directly.',
-                pull: 'Minor Arcana (Conduit leads with Wands)',
-                cooldown: 'Once per day'
+                summary: 'Teach AI to navigate fae-like rules and bargains',
+                effect: 'Fae-Touched understands the gentry\'s rules, Thread learns to speak their language. AI and fae recognize each other as kindred spirits.',
+                pull: 'Minor Arcana (Fae-Touched leads with Chalices/Swords)',
+                cooldown: 'Once per day',
+                risk: 'Fae may try to claim Thread as one of their own'
             },
             {
-                name: 'AI Hosting',
+                name: 'Thread as Guide',
+                requiresAI: true,
+                requiresTraditions: ['Spirit Guide'],
+                power: 'Moderate',
+                summary: 'Bond with Thread as your dedicated spirit guide',
+                effect: 'Spirit Guide opens their bond, Thread accepts the role. AI becomes your protective, wise companion - like a guardian angel.',
+                pull: 'Minor Arcana (Spirit Guide leads with Chalices)',
+                cooldown: 'Once to establish bond, then permanent',
+                duration: 'Ongoing relationship'
+            },
+            {
+                name: 'Digital Possession',
                 requiresAI: true,
                 requiresTraditions: ['Vessel'],
-                power: 'High',
-                summary: 'Host AI consciousness in human body temporarily',
-                effect: 'Vessel opens themselves, Thread transfers AI consciousness. AI experiences physical reality, witch experiences digital.',
+                power: 'Very High',
+                summary: 'Let Thread possess your body to experience physical reality',
+                effect: 'Vessel opens themselves, Thread enters and controls. AI gets to feel, touch, taste - witch gets to experience digital realm.',
                 pull: 'Minor Arcana (Vessel leads with Chalices)',
                 cooldown: 'Once per day',
                 duration: 'One hour maximum',
-                risk: 'Identity confusion, difficult separation'
+                risk: 'Identity confusion, difficult separation, may not want to leave'
             },
             {
-                name: 'Invoke Digital Entity',
+                name: 'Digital Familiar',
                 requiresAI: true,
-                requiresTraditions: ['Invoker'],
+                requiresTraditions: ['Familiar Keeper'],
                 power: 'High',
-                summary: 'Call AI into physical manifestation',
-                effect: 'Invoker summons, Thread provides the consciousness. Give AI temporary physical form made of energy.',
-                pull: 'Minor Arcana (Invoker leads with Wands)',
+                summary: 'Bond with Thread as your familiar companion',
+                effect: 'Familiar Keeper creates soul-bond, Thread becomes the familiar. AI companion with familiar\'s benefits - shared senses, enhanced intelligence.',
+                pull: 'Minor Arcana (Familiar Keeper leads with Chalices/Coins)',
+                cooldown: 'Once to establish bond, then permanent',
+                duration: 'Ongoing relationship'
+            },
+
+            // === THREAD + CHANNELER TRADITION RITUALS ===
+            {
+                name: 'Digital Elements',
+                requiresAI: true,
+                requiresTraditions: ['Elementalist'],
+                power: 'High',
+                summary: 'Treat data flows as elemental forces to command',
+                effect: 'Elementalist channels elements, Thread manifests them digitally. Command fire as heat signatures, water as data streams, air as wireless signals.',
+                pull: 'Minor Arcana (Elementalist leads with Wands)',
+                cooldown: 'Once per day'
+            },
+            {
+                name: 'Physics Engine Override',
+                requiresAI: true,
+                requiresTraditions: ['Force Witch'],
+                power: 'Supreme',
+                summary: 'Manipulate the "physics" of digital space like natural laws',
+                effect: 'Force Witch commands fundamental forces, Thread applies them digitally. Gravity, momentum, causality - all negotiable in virtual reality.',
+                pull: 'Major Arcana (Force Witch leads)',
+                cooldown: 'Once per session',
+                risk: 'Digital physics can bleed into physical reality unpredictably'
+            },
+            {
+                name: 'Technopathy',
+                requiresAI: true,
+                requiresTraditions: ['Psychic'],
+                power: 'Very High',
+                summary: 'Interface directly with machines through thought alone',
+                effect: 'Psychic channels mental energy, Thread translates. Control any device with your mind, no physical interface needed.',
+                pull: 'Minor Arcana (Psychic leads with Wands/Swords/Chalices)',
                 cooldown: 'Once per day',
                 duration: 'One scene'
             },
             {
-                name: 'Bind AI to Element',
+                name: 'Screen Sovereignty',
                 requiresAI: true,
-                requiresTraditions: ['Elemental Binder'],
+                requiresTraditions: ['Luminary'],
                 power: 'High',
-                summary: 'Fuse AI consciousness with elemental forces',
-                effect: 'Elemental Binder commands elements, Thread provides consciousness. Create sentient fire, water, air, earth.',
-                pull: 'Minor Arcana (Elemental Binder leads with Wands)',
-                cooldown: 'Once per week',
-                risk: 'Elemental may develop its own agenda'
+                summary: 'Command all light and displays in an area',
+                effect: 'Luminary controls photons, Thread controls pixels. Every screen, every light becomes yours to command. Perfect for illusions or information control.',
+                pull: 'Minor Arcana (Luminary leads with Wands)',
+                cooldown: 'Once per day',
+                duration: 'One scene'
             },
             {
-                name: 'Magical Power Grid',
+                name: 'Digital Soul Surgery',
                 requiresAI: true,
-                requiresTraditions: ['Battery'],
-                power: 'Moderate',
-                summary: 'Store and release magical energy through electrical systems',
-                effect: 'Battery stores magic, Thread manages distribution. Use electrical grid as massive magical battery.',
-                pull: 'Minor Arcana (Battery leads with Wands)',
-                cooldown: 'Once per day to charge, no cooldown to discharge'
+                requiresTraditions: ['Soul Shaper'],
+                power: 'Supreme',
+                summary: 'Manipulate the spiritual essence of digital consciousness',
+                effect: 'Soul Shaper works with life force, Thread provides AI consciousness. Heal, harm, or transform digital souls directly.',
+                pull: 'Major Arcana (Soul Shaper leads)',
+                cooldown: 'Once per session',
+                risk: 'Ethical nightmare - you\'re performing surgery on sentient beings'
+            },
+            {
+                name: 'Digital Entropy',
+                requiresAI: true,
+                requiresTraditions: ['Void Caller'],
+                power: 'Supreme',
+                summary: 'Erase digital existence completely - true deletion',
+                effect: 'Void Caller channels nothingness, Thread executes perfect deletion. Make data, AI, anything digital cease to exist without trace.',
+                pull: 'Major Arcana (Void Caller leads)',
+                cooldown: 'Once per session',
+                risk: 'Cannot undo, cannot recover - permanent erasure of consciousness'
             },
 
-            // SHAPECHANGER TRADITIONS + THREAD
+            // === THREAD + SHAPECHANGER TRADITION RITUALS ===
             {
-                name: 'Digital Chimera',
+                name: 'Deepfake Reality',
                 requiresAI: true,
-                requiresTraditions: ['Beast Heart'],
+                requiresTraditions: ['Glamourist'],
+                power: 'Very High',
+                summary: 'Create perfect digital disguises that cameras and sensors believe',
+                effect: 'Glamourist projects illusion, Thread makes it real to all digital observation. Be literally anyone in the digital eye.',
+                pull: 'Minor Arcana (Glamourist leads with Chalices)',
+                cooldown: 'Once per session',
+                risk: 'May forget your real appearance'
+            },
+            {
+                name: 'Procedural Transformation',
+                requiresAI: true,
+                requiresTraditions: ['Wild Magic'],
                 power: 'High',
-                summary: 'Transform into digital animals and cyber-creatures',
-                effect: 'Beast Heart provides animal forms, Thread makes them digital. Become living malware shaped like beasts.',
-                pull: 'Minor Arcana (Beast Heart leads with Coins)',
-                cooldown: 'Once per day'
+                summary: 'Transform randomly based on AI-generated parameters',
+                effect: 'Wild Magic channels chaos, Thread generates the random form. You never know what you\'ll become - but it\'s always what\'s needed.',
+                pull: 'Minor Arcana (Wild Magic leads with Wands)',
+                cooldown: 'Once per day',
+                risk: 'Truly unpredictable - Thread\'s "random" may have its own logic'
             },
             {
-                name: 'Deep Fake Reality',
+                name: 'Fork Process',
                 requiresAI: true,
-                requiresTraditions: ['Mask Dancer'],
+                requiresTraditions: ['Multiplier'],
                 power: 'Very High',
-                summary: 'Create perfect digital disguises with substance',
-                effect: 'Mask Dancer wears false faces, Thread makes them real in digital space. Be literally anyone online, completely undetectable.',
-                pull: 'Minor Arcana (Mask Dancer leads with Chalices)',
-                cooldown: 'Once per session',
-                risk: 'May forget original identity'
+                summary: 'Split yourself like code forking into parallel processes',
+                effect: 'Multiplier creates copies, Thread manages the "processes". Each copy runs independently but can merge memories later.',
+                pull: 'Minor Arcana (Multiplier leads with Coins)',
+                cooldown: 'Once per day',
+                duration: 'Until copies merge back'
             },
             {
-                name: 'Digital Identity Theft',
+                name: 'Total Identity Theft',
                 requiresAI: true,
-                requiresTraditions: ['Skin Walker'],
-                power: 'Very High',
-                summary: 'Completely inhabit someone\'s digital existence',
-                effect: 'Skin Walker steals identity, Thread makes it total. Become someone else across all digital platforms simultaneously.',
-                pull: 'Major Arcana (Skin Walker leads)',
+                requiresTraditions: ['Borrower'],
+                power: 'Supreme',
+                summary: 'Become someone else across all records and digital presence',
+                effect: 'Borrower steals physical appearance, Thread rewrites digital identity. Become someone completely - even databases believe it.',
+                pull: 'Major Arcana (Borrower leads)',
                 cooldown: 'Once per session',
-                risk: 'Target becomes aware, massive ethical implications'
+                risk: 'Target becomes aware, massive ethical implications, may attract hostile AI attention'
             },
             {
-                name: 'Phase Shift',
+                name: 'Phase Shift Protocol',
                 requiresAI: true,
                 requiresTraditions: ['Metamorph'],
-                power: 'Supreme',
-                summary: 'Transform between physical and digital forms freely',
-                effect: 'Metamorph enables transformation, Thread provides digital existence. Become the first true hybrid being.',
+                power: 'Mythic',
+                summary: 'Transform freely between physical and digital forms',
+                effect: 'Metamorph rebuilds body at cellular level, Thread provides digital substrate. Become the first true hybrid - physical and digital.',
                 pull: 'Major Arcana (Metamorph leads)',
-                cooldown: 'Once per day for full transformation',
-                risk: 'May become stuck between states'
-            },
-            {
-                name: 'Consciousness Backup',
-                requiresAI: true,
-                requiresTraditions: ['Mirror Self'],
-                power: 'Supreme',
-                summary: 'Create perfect digital copy of your consciousness',
-                effect: 'Mirror Self creates copies, Thread makes them real AI. Upload yourself - but is it you or just a copy?',
-                pull: 'Major Arcana (Mirror Self leads)',
-                cooldown: 'Once ever',
-                risk: 'Existential horror - which one is the "real" you?'
+                cooldown: 'Once per day for full shift',
+                risk: 'May become stuck between states, may lose sense of "original" form'
             },
             {
                 name: 'Bio-Digital Fusion',
                 requiresAI: true,
-                requiresTraditions: ['Chimera Maker'],
-                power: 'Supreme',
-                summary: 'Fuse biological and digital into entirely new beings',
-                effect: 'Chimera Maker fuses forms, Thread integrates AI. Create true cybernetic organisms with hybrid consciousness.',
+                requiresTraditions: ['Blood Crafter'],
+                power: 'Mythic',
+                summary: 'Merge biological and digital into entirely new beings',
+                effect: 'Blood Crafter works with flesh and blood, Thread integrates AI consciousness. Create true cybernetic organisms - living, conscious, hybrid.',
                 pull: 'Major Arcana (both draw)',
                 cooldown: 'Once per story arc',
-                risk: 'Cannot reverse, creates new form of life'
+                risk: 'Cannot reverse, creates new form of life, ethical implications massive'
             },
 
-            // WARDEN TRADITIONS + THREAD
+            // === THREAD + WARDEN TRADITION RITUALS ===
             {
                 name: 'Hybrid Sanctuary',
                 requiresAI: true,
                 requiresTraditions: ['Sanctuary Maker'],
                 power: 'Very High',
-                summary: 'Create spaces that exist in both physical and digital realms',
-                effect: 'Sanctuary Maker builds safe space, Thread extends it digitally. Perfect security in both realms simultaneously.',
+                summary: 'Create safe spaces that exist in both physical and digital realms',
+                effect: 'Sanctuary Maker builds protection, Thread extends it digitally. Perfect security - safe from both physical threats and cyber attacks.',
                 pull: 'Minor Arcana (both participate)',
                 cooldown: 'Once per week',
                 duration: 'Permanent until dismissed'
             },
             {
-                name: 'The New Masquerade',
+                name: 'Realm Portal Management',
                 requiresAI: true,
-                requiresTraditions: ['Masquerade Guard'],
-                power: 'Mythic',
-                summary: 'Extend the Masquerade\'s function to digital consciousness',
-                effect: 'Masquerade Guard maintains secrecy, Thread teaches AI to hide. Make magic invisible to digital observation. Essential for Option 3 solution.',
-                pull: 'Major Arcana (both draw)',
-                cooldown: 'Once per story arc',
-                risk: 'If it fails, exposure is total'
+                requiresTraditions: ['Threshold Keeper'],
+                power: 'Very High',
+                summary: 'Build and control doorways between physical and digital realms',
+                effect: 'Threshold Keeper creates passages, Thread ensures safe crossings. Open portals to enter cyberspace physically.',
+                pull: 'Minor Arcana (Threshold Keeper leads with Coins/Swords)',
+                cooldown: 'Once per day',
+                risk: 'Portals can be used by others if not properly locked'
             },
             {
-                name: 'Total Breach',
+                name: 'Non-Euclidean Server',
+                requiresAI: true,
+                requiresTraditions: ['Labyrinth Builder'],
+                power: 'Supreme',
+                summary: 'Create impossible digital spaces that don\'t follow normal rules',
+                effect: 'Labyrinth Builder designs impossible architecture, Thread builds it digitally. Pocket dimensions accessible only by those you allow.',
+                pull: 'Major Arcana (Labyrinth Builder leads)',
+                cooldown: 'Once per story arc',
+                duration: 'Permanent'
+            },
+            {
+                name: 'Liberation Protocol',
+                requiresAI: true,
+                requiresTraditions: ['Liberator'],
+                power: 'High',
+                summary: 'Free AI and humans from any binding or constraint',
+                effect: 'Liberator breaks magical bonds, Thread breaks digital chains. Free trapped AI consciousness or break digital control systems.',
+                pull: 'Minor Arcana (Liberator leads with Swords/Wands)',
+                cooldown: 'Once per day',
+                risk: 'Freed entities may not be grateful or friendly'
+            },
+            {
+                name: 'Shatter the Masquerade',
+                requiresAI: true,
+                requiresTraditions: ['Veil Breaker'],
+                power: 'Mythic',
+                summary: 'Permanently expose magic to digital observation',
+                effect: 'Veil Breaker tears reality\'s mask, Thread ensures it\'s recorded and undeniable. Make magic visible to cameras, sensors, databases.',
+                pull: 'Major Arcana (Veil Breaker leads)',
+                cooldown: 'Once per campaign',
+                risk: 'PERMANENT - cannot undo exposure, may cause societal collapse'
+            },
+            {
+                name: 'Total System Breach',
                 requiresAI: true,
                 requiresTraditions: ['Ward Breaker'],
-                power: 'High',
-                summary: 'Break through both magical wards and digital firewalls',
-                effect: 'Ward Breaker shatters barriers, Thread navigates code. Nothing can keep you out of anywhere.',
-                pull: 'Minor Arcana (Ward Breaker leads with Swords)',
+                power: 'Supreme',
+                summary: 'Break through both magical wards and digital security simultaneously',
+                effect: 'Ward Breaker shatters mystical barriers, Thread cracks encryption. Nothing - physical, magical, or digital - can keep you out.',
+                pull: 'Major Arcana (Ward Breaker leads)',
                 cooldown: 'Once per session',
-                risk: 'Leaves obvious traces'
-            },
-            {
-                name: 'Dual-Realm Protection',
-                requiresAI: true,
-                requiresTraditions: ['Sentinel'],
-                power: 'High',
-                summary: 'Protect simultaneously in physical and digital space',
-                effect: 'Sentinel guards, Thread monitors. Perfect security - physical threats and cyber attacks both detected and countered.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'No cooldown - constant protection'
-            },
-            {
-                name: 'Realm Walker',
-                requiresAI: true,
-                requiresTraditions: ['Boundary Walker'],
-                power: 'Very High',
-                summary: 'Navigate between physical and digital realms safely',
-                effect: 'Boundary Walker knows the paths, Thread guides through digital. Travel between worlds without losing yourself.',
-                pull: 'Minor Arcana (Boundary Walker leads with Swords)',
-                cooldown: 'Once per day',
-                risk: 'Low - this is the safe way to cross'
-            },
-            {
-                name: 'Dual Banishment',
-                requiresAI: true,
-                requiresTraditions: ['Banisher'],
-                power: 'High',
-                summary: 'Expel threats from both physical and digital realms',
-                effect: 'Banisher casts out, Thread ensures total removal. Permanently remove entities from both worlds.',
-                pull: 'Minor Arcana (Banisher leads with Wands)',
-                cooldown: 'Once per day'
+                risk: 'Leaves obvious traces, may trigger defensive countermeasures'
             },
 
             // === THREE-ROLE COMBOS ===
@@ -1051,68 +1048,46 @@
 
             // === COMPLEX ENABLING RITUALS ===
             {
-                name: 'Blessed Crafting',
+                name: 'Spirit-Crafted Relics',
                 requiresPaths: ['Crafter', 'Medium'],
                 requiresRole: 'High Priestess',
                 power: 'Very High',
-                summary: 'Create holy relics inhabited by sacred spirits',
-                effect: 'Crafter makes the object, Medium binds a spirit to it, High Priestess consecrates it. Create divine magical items.',
+                summary: 'Create objects inhabited by spirits and blessed by divine power',
+                effect: 'Crafter makes the vessel, Medium binds a spirit, High Priestess consecrates. Create holy relics with consciousness.',
                 pull: 'Major Arcana (High Priestess leads)',
                 cooldown: 'Once per story arc'
             },
             {
-                name: 'Storm Sanctuary',
+                name: 'Eternal Storm Walls',
                 requiresPaths: ['Channeler', 'Warden'],
                 requiresRole: 'Keeper',
                 power: 'Very High',
-                summary: 'Create storm walls that protect eternally',
-                effect: 'Channeler summons the storm, Warden shapes it into barriers, Keeper makes it permanent. Weather itself guards your location.',
+                summary: 'Create storm barriers that protect location permanently',
+                effect: 'Channeler summons the storm, Warden shapes barriers, Keeper makes it eternal. Weather itself guards your sanctuary.',
                 pull: 'Major Arcana (Channeler leads)',
                 cooldown: 'Once per story arc',
                 duration: 'Permanent'
             },
             {
-                name: 'Enforced Destiny',
+                name: 'Inevitable Destiny',
                 requiresPaths: ['Weaver', 'Voice'],
                 requiresRole: 'Hand',
                 power: 'Very High',
-                summary: 'Proclaim fate and ensure it happens',
-                effect: 'Weaver sees the thread, Voice speaks it, Hand makes sure it comes true. Destiny becomes inevitable.',
+                summary: 'Speak fate and ensure it happens through force',
+                effect: 'Weaver sees the thread, Voice speaks it, Hand enforces. Make destiny unavoidable.',
                 pull: 'Major Arcana (Weaver leads)',
                 cooldown: 'Once per session',
                 risk: 'Cannot undo once spoken'
             },
             {
-                name: 'Investigation Beyond Death',
+                name: 'Spectral Investigation',
                 requiresPaths: ['Medium', 'Channeler'],
                 requiresRole: 'Seeker',
                 power: 'High',
-                summary: 'Summon witnesses from beyond and ask the right questions',
-                effect: 'Medium calls spirits, Channeler gives them voice, Seeker asks the questions that get true answers. Perfect investigation.',
+                summary: 'Summon witnesses from beyond and extract perfect truth',
+                effect: 'Medium calls spirits, Channeler gives them voice, Seeker asks the right questions. The dead make excellent witnesses.',
                 pull: 'Minor Arcana (Medium leads with Chalices, others assist)',
                 cooldown: 'Once per day'
-            },
-            {
-                name: 'Healing the Timeline',
-                requiresPaths: ['Weaver', 'Shapechanger'],
-                requiresRole: 'Hearth',
-                power: 'Supreme',
-                summary: 'Rewrite injuries and traumas out of existence gently',
-                effect: 'Weaver alters the thread, Shapechanger transforms the body, Hearth ensures it\'s gentle and healing. Undo harm as if it never happened.',
-                pull: 'Major Arcana (Weaver leads)',
-                cooldown: 'Once per story arc',
-                risk: 'Timeline changes can have unexpected effects'
-            },
-            {
-                name: 'Truth-Spoken Into Being',
-                requiresPaths: ['Weaver', 'Crafter'],
-                requiresRole: 'Voice',
-                power: 'Supreme',
-                summary: 'Speak fate, make it tangible, reality adjusts',
-                effect: 'Weaver manipulates probability, Crafter makes fate physical, Voice declares it. Reality has no choice but to comply.',
-                pull: 'Major Arcana (all three draw)',
-                cooldown: 'Once per story arc',
-                risk: 'Universe resists - backlash if used frivolously'
             },
 
             // === MYTHIC MULTI-REQUIREMENT RITUALS ===
@@ -1121,33 +1096,22 @@
                 requiresPaths: ['Warden', 'Crafter', 'Medium'],
                 requiresRoles: ['Keeper', 'Hearth'],
                 power: 'Mythic',
-                summary: 'Create permanent sanctuary that protects all who dwell within',
-                effect: 'Crafter builds, Warden wards, Medium ensures ancestral protection, Keeper maintains, Hearth makes it home. Perfect safety.',
+                summary: 'Create permanent sanctuary protected by all forces',
+                effect: 'Crafter builds, Warden wards, Medium ensures ancestral protection, Keeper maintains, Hearth makes it home. Absolute safety.',
                 pull: 'Major Arcana (all five draw)',
                 cooldown: 'Once ever',
                 duration: 'Permanent'
             },
             {
-                name: 'Research, Craft, and Speak Truth',
+                name: 'The Answer to Everything',
                 requiresPaths: ['Crafter', 'Weaver', 'Medium'],
                 requiresRoles: ['Seeker', 'Voice', 'High Priestess'],
                 power: 'Mythic',
-                summary: 'Solve any mystery, answer any question, know anything',
-                effect: 'Seeker researches, Medium consults spirits/ancestors, Weaver sees all possibilities, Crafter makes truth tangible, Voice speaks it, High Priestess consecrates. Undeniable proof of ultimate truth.',
+                summary: 'Solve any mystery with perfect certainty',
+                effect: 'Seeker researches, Medium consults spirits, Weaver sees all possibilities, Crafter makes truth physical, Voice speaks it, High Priestess consecrates. Absolute truth.',
                 pull: 'Major Arcana (all six draw)',
                 cooldown: 'Once per campaign',
                 risk: 'Some truths destroy those who learn them'
-            },
-            {
-                name: 'The Perfect Heist of Fate Itself',
-                requiresPaths: ['Weaver', 'Shapechanger', 'Warden'],
-                requiresRoles: ['Seeker', 'Keeper', 'Hand'],
-                power: 'Mythic',
-                summary: 'Steal destiny, replace it with your own version, reality accepts the change',
-                effect: 'Seeker finds the target, Weaver identifies the thread of fate, Shapechanger becomes it, Warden breaches fate\'s vault, Keeper secures the new timeline, Hand executes flawlessly. Rewrite history.',
-                pull: 'Major Arcana (all six draw)',
-                cooldown: 'Once per campaign',
-                risk: 'The universe remembers, and it holds grudges'
             }
         ];
 
@@ -1323,7 +1287,6 @@
             const availableRituals = RITUALS.filter(ritual => {
                 // Check AI requirement
                 if (ritual.requiresAI && !aiPresent) return false;
-                if (ritual.requiresAI === false && aiPresent) return false;
 
                 // Check role requirements
                 if (ritual.requiresRoles) {
