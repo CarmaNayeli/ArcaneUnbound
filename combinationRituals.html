@@ -321,6 +321,69 @@
             margin-bottom: 10px;
         }
 
+        .mode-toggle {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(20, 20, 40, 0.6);
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mode-toggle label {
+            color: #c084fc;
+            font-size: 1.1em;
+            margin: 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(100, 100, 120, 0.5);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 33px;
+        }
+
+        .tradition-selector {
+            display: none;
+        }
+
+        .tradition-selector.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mode-description {
+            color: #9ca3af;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.8em;
@@ -352,9 +415,19 @@
         </header>
 
         <div class="selector-panel">
+            <div class="mode-toggle">
+                <div class="toggle-switch" id="modeToggle" onclick="toggleAdvancedMode()">
+                    <div class="toggle-slider"></div>
+                </div>
+                <label for="modeToggle" onclick="toggleAdvancedMode()">
+                    <span id="modeLabel">Basic Mode</span>
+                    <div class="mode-description" id="modeDescription">Role & Path combinations only</div>
+                </label>
+            </div>
+
             <h2 style="color: #c084fc; margin-bottom: 10px;">Select Your Coven Members</h2>
             <p style="color: #9ca3af; margin-bottom: 20px;">Choose the role AND path for each witch to see available rituals</p>
-            
+
             <div class="selector-grid" id="roleSelectors">
                 <!-- Member selectors will be dynamically generated -->
             </div>
@@ -397,6 +470,59 @@
             "Shapechanger",
             "Warden"
         ];
+
+        const traditions = {
+            "Crafter": [
+                { name: "Songbird", summary: "Sound and resonance magic through music" },
+                { name: "Nourishers", summary: "Magic through consumption and grown things" },
+                { name: "Ritualists", summary: "Prepared enchanted objects" },
+                { name: "Binders", summary: "Knots, ties, and sympathetic connections" },
+                { name: "Shapers", summary: "Transform raw materials into magical objects" },
+                { name: "Inscribers", summary: "Marking and symbolism magic" }
+            ],
+            "Weaver": [
+                { name: "Oracle", summary: "Divination tools (tarot, bones, runes)" },
+                { name: "Augur", summary: "Read natural signs and omens" },
+                { name: "Chronologist", summary: "Time and temporal manipulation" },
+                { name: "Pattern Seeker", summary: "Mathematics and logical fate" },
+                { name: "Invoker", summary: "Petition higher powers" },
+                { name: "Synchronist", summary: "Meaningful coincidence and chaos" }
+            ],
+            "Medium": [
+                { name: "Death Keeper", summary: "Connect with the dead" },
+                { name: "Demon Broker", summary: "Negotiate with infernal entities" },
+                { name: "Fae-Touched", summary: "Deal with the fair folk" },
+                { name: "Spirit Guide", summary: "Dedicated protective spirit" },
+                { name: "Vessel", summary: "Allow entity possession" },
+                { name: "Familiar Keeper", summary: "Magical animal companion bond" }
+            ],
+            "Channeler": [
+                { name: "Elementalist", summary: "Classical elements (fire, water, air, earth)" },
+                { name: "Force Witch", summary: "Natural laws and planetary forces" },
+                { name: "Psychic", summary: "Mental energy and telepathy" },
+                { name: "Luminary", summary: "Light and darkness" },
+                { name: "Soul Shaper", summary: "Spiritual energy and life force" },
+                { name: "Void Caller", summary: "Entropy and nothingness" }
+            ],
+            "Shapechanger": [
+                { name: "Glamourist", summary: "Illusion and appearance changes" },
+                { name: "Wild Magic", summary: "Random, chaotic transformation" },
+                { name: "Multiplier", summary: "Create copies of yourself" },
+                { name: "Borrower", summary: "Take other people's shapes" },
+                { name: "Metamorph", summary: "Transform body's actual structure" },
+                { name: "Blood Crafter", summary: "Blood magic and sacrifice" }
+            ],
+            "Warden": [
+                { name: "Sanctuary Maker", summary: "Build safe, protected spaces" },
+                { name: "Threshold Keeper", summary: "Build and control doorways" },
+                { name: "Labyrinth Builder", summary: "Create impossible spaces" },
+                { name: "Liberator", summary: "Break bonds and curses" },
+                { name: "Veil Breaker", summary: "Break reality's boundaries" },
+                { name: "Ward Breaker", summary: "Destroy protections and defenses" }
+            ]
+        };
+
+        let advancedMode = false;
 
         const rituals = [
             // 2-ROLE COMBINATIONS
@@ -1424,6 +1550,318 @@
                 duration: "Permanent knowledge",
                 risk: "Some truths should stay hidden",
                 complexity: "Requires: Crafter + Weaver + Medium + Seeker + Voice + High Priestess all present"
+            },
+
+            // TRADITION-SPECIFIC RITUALS
+            {
+                name: "Harmonic Divination",
+                traditions: ["Songbird", "Oracle"],
+                power: "High",
+                summary: "Use music to enhance and clarify divination readings",
+                description: "Songbird plays while Oracle reads the cards/bones/runes. The music resonates with fate itself, making readings impossibly clear. See not just the future, but hear it, feel it in every note.",
+                leader: "Both work in harmony",
+                pullType: "Major Arcana (Oracle), enhanced by Songbird's performance",
+                cooldown: "Once per session",
+                duration: "One reading"
+            },
+            {
+                name: "Death Song",
+                traditions: ["Songbird", "Death Keeper"],
+                power: "Moderate",
+                summary: "Sing to summon, guide, or release the dead",
+                description: "A song that calls to spirits across the veil. Death Keeper opens the door, Songbird calls them through with music. Can summon specific spirits, guide lost souls home, or sing the dead to peaceful rest.",
+                leader: "Songbird sings, Death Keeper channels",
+                pullType: "Minor Arcana (both pool with Chalices)",
+                cooldown: "Once per day",
+                duration: "One scene"
+            },
+            {
+                name: "Elemental Symphony",
+                traditions: ["Songbird", "Elementalist"],
+                power: "High",
+                summary: "Control all four elements through orchestrated sound",
+                description: "Each note commands a different element. Create devastating storms of fire, water, air, and earth - all dancing to the music. Elementalist provides the raw power, Songbird conducts it like an orchestra.",
+                leader: "Songbird conducts",
+                pullType: "Major Arcana (Elementalist), shaped by Songbird",
+                cooldown: "Once per session",
+                duration: "Duration of the song",
+                risk: "Lose the rhythm, lose control"
+            },
+            {
+                name: "Feast of Spirits",
+                traditions: ["Nourishers", "Death Keeper"],
+                power: "Moderate",
+                summary: "Prepare food that allows communion with the dead",
+                description: "Nourishers cook a ritual meal, Death Keeper invites the spirits. Those who eat can see, hear, and speak with the dead as if they were alive. The dead can even taste the food and feel temporarily corporeal.",
+                leader: "Nourishers prepare, Death Keeper invites",
+                pullType: "Minor Arcana (both pool)",
+                cooldown: "Once per week",
+                duration: "Duration of the meal"
+            },
+            {
+                name: "Time-Locked Preparation",
+                traditions: ["Ritualists", "Chronologist"],
+                power: "Very High",
+                summary: "Prepare enchanted items that activate at the perfect moment",
+                description: "Ritualists craft the items, Chronologist sets them to activate at the exact perfect moment in time. Create a healing potion that works the instant before you'd die, a shield that activates when the killing blow comes, a key that appears when you need it most.",
+                leader: "Ritualists craft, Chronologist times",
+                pullType: "Major Arcana (Chronologist determines timing)",
+                cooldown: "Once per story arc",
+                duration: "Until activated"
+            },
+            {
+                name: "Bound to Fate",
+                traditions: ["Binders", "Oracle"],
+                power: "High",
+                summary: "Tie someone to their destined path",
+                description: "Oracle sees their fate, Binders create a physical cord connecting them to it. They MUST walk their destined path. Can be blessing (ensuring success) or curse (trapping them in tragedy). Cannot be broken except by fulfilling the destiny.",
+                leader: "Oracle sees, Binders tie",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Until fate fulfilled",
+                risk: "Forcing fate has consequences"
+            },
+            {
+                name: "Living Sculpture",
+                traditions: ["Shapers", "Metamorph"],
+                power: "High",
+                summary: "Create sculptures that can transform and move",
+                description: "Shapers mold the form, Metamorph grants it the ability to change. Create statues that can become anything - guardians that shift from stone to flesh, art that becomes weapons, sculptures that adapt to any purpose.",
+                leader: "Shapers create, Metamorph animates",
+                pullType: "Major Arcana",
+                cooldown: "Once per week",
+                duration: "Permanent living creation"
+            },
+            {
+                name: "Tattooed Prophecy",
+                traditions: ["Inscribers", "Oracle"],
+                power: "Very High",
+                summary: "Mark someone with their future in magical ink",
+                description: "Oracle reads their fate, Inscribers tattoo it onto their skin. The tattoo changes as destiny shifts, warns of danger, reveals opportunities. The bearer always knows what's coming - but cannot avoid it.",
+                leader: "Oracle reads, Inscribers mark",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per story arc",
+                duration: "Permanent living prophecy",
+                risk: "Knowing your fate doesn't mean you can change it"
+            },
+            {
+                name: "Spirit Portal",
+                traditions: ["Threshold Keeper", "Death Keeper"],
+                power: "Very High",
+                summary: "Create permanent doorways to the realm of the dead",
+                description: "Threshold Keeper builds the door, Death Keeper attunes it to the afterlife. Create gates through which the living can visit the dead and vice versa. Extremely dangerous if left unguarded.",
+                leader: "Threshold Keeper builds, Death Keeper consecrates",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per campaign",
+                duration: "Permanent gateway",
+                risk: "The veil exists for a reason"
+            },
+            {
+                name: "Impossible Prison",
+                traditions: ["Labyrinth Builder", "Chronologist"],
+                power: "Supreme",
+                summary: "Trap someone in a space where time loops forever",
+                description: "Labyrinth Builder creates the space, Chronologist makes time repeat endlessly within it. Prisoner experiences the same day/hour/minute over and over. Perfect imprisonment - they can never escape because time never moves forward.",
+                leader: "Both work together",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per campaign",
+                duration: "Until casters release them",
+                risk: "May drive prisoner insane"
+            },
+            {
+                name: "Legion of One",
+                traditions: ["Multiplier", "Familiar Keeper"],
+                power: "High",
+                summary: "Each duplicate gets its own familiar",
+                description: "Multiplier creates copies, Familiar Keeper's bond extends to all of them. Create an army of yourself, each with their own animal companion. Perfect coordination, overwhelming numbers.",
+                leader: "Multiplier creates",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One scene or combat",
+                risk: "All familiars feel each other's pain"
+            },
+            {
+                name: "Mathematical Mimicry",
+                traditions: ["Borrower", "Pattern Seeker"],
+                power: "High",
+                summary: "Steal someone's identity through pure analysis",
+                description: "Pattern Seeker analyzes every detail of the target - speech patterns, body language, behavioral probability. Borrower uses this data to become a PERFECT copy. Not just appearance, but personality, habits, unconscious tells. Undetectable.",
+                leader: "Pattern Seeker analyzes, Borrower transforms",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Until dismissed"
+            },
+            {
+                name: "Gateway to Nowhere",
+                traditions: ["Threshold Keeper", "Void Caller"],
+                power: "Supreme",
+                summary: "Open doors into the void itself",
+                description: "Threshold Keeper creates the doorway, Void Caller attunes it to absolute nothingness. Open portals that lead to non-existence. Anything that enters ceases to be. The ultimate disposal method - or weapon.",
+                leader: "Both work together",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per story arc",
+                duration: "Until closed",
+                risk: "The void consumes indiscriminately"
+            },
+            {
+                name: "Fae Contract Enforcement",
+                traditions: ["Fae-Touched", "Inscribers"],
+                power: "High",
+                summary: "Write binding contracts with the fair folk",
+                description: "Fae-Touched knows the rules and loopholes, Inscribers makes the contract physically binding. Create deals with the fae that even they cannot break. Perfect wording, iron-clad terms, magical enforcement.",
+                leader: "Fae-Touched negotiates, Inscribers writes",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Until contract fulfilled"
+            },
+            {
+                name: "Demon-Forged Arsenal",
+                traditions: ["Demon Broker", "Shapers"],
+                power: "Very High",
+                summary: "Bind demons into weapons for devastating power",
+                description: "Demon Broker negotiates with infernal entities, Shapers creates vessels to contain them. Forge weapons that house demons - swords that burn with hellfire, armor that regenerates, shields that devour attacks.",
+                leader: "Demon Broker binds, Shapers forges",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per story arc",
+                duration: "Permanent demon weapons",
+                risk: "Demons always want freedom"
+            },
+            {
+                name: "Augury Storm",
+                traditions: ["Augur", "Force Witch"],
+                power: "High",
+                summary: "Read fate in weather patterns, then make the weather real",
+                description: "Augur reads omens in storm clouds, Force Witch makes those omens manifest physically. See a future in the lightning, then call that lightning down. Weather becomes both prophecy and weapon.",
+                leader: "Augur reads, Force Witch manifests",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One storm"
+            },
+            {
+                name: "Possession by Design",
+                traditions: ["Vessel", "Synchronist"],
+                power: "High",
+                summary: "Be possessed by exactly the right spirit for this moment",
+                description: "Synchronist determines what's needed right now, Vessel opens themselves to possession by the perfect entity. Need a warrior? Get possessed by a legendary general. Need knowledge? Get possessed by an ancient scholar. Always the right spirit at the right time.",
+                leader: "Synchronist guides, Vessel receives",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One scene",
+                risk: "The spirit may not want to leave"
+            },
+            {
+                name: "Mind Palace Labyrinth",
+                traditions: ["Labyrinth Builder", "Psychic"],
+                power: "High",
+                summary: "Create impossible mental spaces for perfect memory",
+                description: "Psychic enters the mind, Labyrinth Builder structures it into impossible architecture. Create mental palaces bigger on the inside - infinite memory storage, perfect recall, thoughts organized in non-Euclidean space.",
+                leader: "Labyrinth Builder structures, Psychic navigates",
+                pullType: "Major Arcana",
+                cooldown: "Once per week",
+                duration: "Permanent mental enhancement"
+            },
+            {
+                name: "Soul-Bound Sanctuary",
+                traditions: ["Sanctuary Maker", "Soul Shaper"],
+                power: "Very High",
+                summary: "Create a space that heals the soul itself",
+                description: "Sanctuary Maker builds the space, Soul Shaper attunes it to spiritual energy. A place that doesn't just protect the body - it heals trauma, repairs damaged souls, mends broken spirits. True sanctuary for the wounded.",
+                leader: "Both work together",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per campaign",
+                duration: "Permanent healing sanctuary"
+            },
+            {
+                name: "Liberator's Light",
+                traditions: ["Liberator", "Luminary"],
+                power: "High",
+                summary: "Break all bonds with purifying light",
+                description: "Liberator identifies the chains - magical, mental, emotional, physical. Luminary burns them away with radiant light. Free slaves, break curses, shatter mind control, dissolve contracts - nothing can bind what this light touches.",
+                leader: "Liberator identifies, Luminary burns",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Instant liberation"
+            },
+            {
+                name: "Veil-Breaking Ritual",
+                traditions: ["Veil Breaker", "Invoker"],
+                power: "Mythic",
+                summary: "Call upon gods to tear down reality's barriers",
+                description: "Invoker petitions divine forces, Veil Breaker channels their power to shatter the boundary between mundane and magical. Expose the supernatural world to everyone. Make magic impossible to deny. Change reality permanently.",
+                leader: "Invoker calls, Veil Breaker breaks",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per campaign if ever",
+                duration: "Permanent world change",
+                risk: "WORLD-ALTERING. Cannot be undone. Gods themselves will notice."
+            },
+            {
+                name: "Ward-Breaker's Eye",
+                traditions: ["Ward Breaker", "Pattern Seeker"],
+                power: "High",
+                summary: "Mathematically identify and exploit every flaw in defenses",
+                description: "Pattern Seeker analyzes the ward's structure, finding the mathematical weak points. Ward Breaker exploits them with surgical precision. Break any protection, no matter how strong - you just need to find the equation.",
+                leader: "Pattern Seeker calculates, Ward Breaker strikes",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One breach"
+            },
+            {
+                name: "Wild Fate",
+                traditions: ["Wild Magic", "Augur"],
+                power: "High",
+                summary: "Transform randomly into whatever fate demands",
+                description: "Augur reads the signs of what's needed, Wild Magic transforms you into it through chaos. Don't choose your form - let destiny choose. Become whatever the universe needs in this moment, even if you don't understand why yet.",
+                leader: "Augur reads, Wild Magic transforms",
+                pullType: "Major Arcana (GM determines form based on Augur's reading)",
+                cooldown: "Once per session",
+                duration: "One scene",
+                risk: "Complete loss of control over your form"
+            },
+            {
+                name: "Blood-Signed Pact",
+                traditions: ["Blood Crafter", "Demon Broker"],
+                power: "Very High",
+                summary: "Sign contracts in blood with infernal powers",
+                description: "Demon Broker negotiates the terms, Blood Crafter seals them in blood magic. Create deals with demons that are absolutely binding on both sides. The blood ensures neither party can break the contract without paying in pain.",
+                leader: "Demon Broker negotiates, Blood Crafter seals",
+                pullType: "Major Arcana",
+                cooldown: "Once per story arc",
+                duration: "Until contract fulfilled",
+                risk: "Blood magic is dangerous, demons are treacherous"
+            },
+            {
+                name: "Glamoured Sanctuary",
+                traditions: ["Glamourist", "Sanctuary Maker"],
+                power: "Moderate",
+                summary: "Hide a sanctuary behind perfect illusions",
+                description: "Sanctuary Maker builds the safe space, Glamourist makes it invisible. Create havens that cannot be found because no one can see them. Not just invisibility - the illusion makes people's eyes slide past without noticing anything is there.",
+                leader: "Sanctuary Maker builds, Glamourist conceals",
+                pullType: "Minor Arcana (both pool)",
+                cooldown: "Once per week",
+                duration: "Permanent until dismissed"
+            },
+            {
+                name: "Nourishment of Power",
+                traditions: ["Nourishers", "Soul Shaper"],
+                power: "Moderate",
+                summary: "Cook food that restores magical energy and spiritual essence",
+                description: "Nourishers prepare the meal, Soul Shaper infuses it with spiritual energy. Create food that doesn't just heal the body - it restores magical power, replenishes spiritual energy, mends damaged souls. Feast and be renewed.",
+                leader: "Nourishers prepare, Soul Shaper infuses",
+                pullType: "Minor Arcana (both pool with Chalices)",
+                cooldown: "Once per day",
+                duration: "Immediate restoration"
+            },
+            {
+                name: "Psychic Binding",
+                traditions: ["Binders", "Psychic"],
+                power: "High",
+                summary: "Create mental/emotional bonds between people",
+                description: "Psychic forges the mental connection, Binders makes it permanent. Link minds, share emotions, feel what others feel. Create unbreakable teams, ensure perfect communication, or torture someone by binding them to their victim's pain.",
+                leader: "Psychic connects, Binders binds",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Until Binders releases",
+                risk: "Shared pain goes both ways"
             }
         ];
 
@@ -1512,8 +1950,103 @@
             pathSelectorDiv.appendChild(pathLabel);
             pathSelectorDiv.appendChild(pathSelect);
             memberDiv.appendChild(pathSelectorDiv);
-            
+
+            // Tradition selector (hidden in basic mode)
+            const traditionSelectorDiv = document.createElement('div');
+            traditionSelectorDiv.className = 'role-selector tradition-selector';
+            traditionSelectorDiv.id = `tradition-container${index}`;
+
+            const traditionLabel = document.createElement('label');
+            traditionLabel.textContent = 'Tradition';
+
+            const traditionSelect = document.createElement('select');
+            traditionSelect.id = `tradition${index}`;
+            traditionSelect.onchange = updateRituals;
+
+            const traditionEmptyOption = document.createElement('option');
+            traditionEmptyOption.value = '';
+            traditionEmptyOption.textContent = '-- No Tradition --';
+            traditionSelect.appendChild(traditionEmptyOption);
+
+            traditionSelectorDiv.appendChild(traditionLabel);
+            traditionSelectorDiv.appendChild(traditionSelect);
+            memberDiv.appendChild(traditionSelectorDiv);
+
+            // Update tradition options when path changes
+            pathSelect.addEventListener('change', () => {
+                updateTraditionOptions(index);
+            });
+
             container.appendChild(memberDiv);
+        }
+
+        function updateTraditionOptions(index) {
+            const pathSelect = document.getElementById(`path${index}`);
+            const traditionSelect = document.getElementById(`tradition${index}`);
+
+            if (!pathSelect || !traditionSelect) return;
+
+            const selectedPath = pathSelect.value;
+
+            // Clear existing options except the first one
+            traditionSelect.innerHTML = '';
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.textContent = '-- No Tradition --';
+            traditionSelect.appendChild(emptyOption);
+
+            // Add traditions for selected path
+            if (selectedPath && traditions[selectedPath]) {
+                traditions[selectedPath].forEach(trad => {
+                    const option = document.createElement('option');
+                    option.value = trad.name;
+                    option.textContent = `${trad.name} (${trad.summary})`;
+                    traditionSelect.appendChild(option);
+                });
+            }
+
+            updateRituals();
+        }
+
+        function toggleAdvancedMode() {
+            advancedMode = !advancedMode;
+
+            const modeToggle = document.getElementById('modeToggle');
+            const modeLabel = document.getElementById('modeLabel');
+            const modeDescription = document.getElementById('modeDescription');
+
+            if (advancedMode) {
+                modeToggle.classList.add('active');
+                modeLabel.textContent = 'Advanced Mode';
+                modeDescription.textContent = 'Role, Path & Tradition combinations';
+
+                // Show all tradition selectors
+                document.querySelectorAll('.tradition-selector').forEach(el => {
+                    el.classList.add('show');
+                });
+
+                // Update tradition options for all members
+                for (let i = 0; i < currentMemberCount; i++) {
+                    updateTraditionOptions(i);
+                }
+            } else {
+                modeToggle.classList.remove('active');
+                modeLabel.textContent = 'Basic Mode';
+                modeDescription.textContent = 'Role & Path combinations only';
+
+                // Hide all tradition selectors and clear selections
+                document.querySelectorAll('.tradition-selector').forEach(el => {
+                    el.classList.remove('show');
+                });
+
+                // Clear tradition selections
+                for (let i = 0; i < currentMemberCount; i++) {
+                    const traditionSelect = document.getElementById(`tradition${i}`);
+                    if (traditionSelect) traditionSelect.value = '';
+                }
+            }
+
+            updateRituals();
         }
 
         function addMember() {
@@ -1539,28 +2072,41 @@
         function rebuildMemberDisplay() {
             const container = document.getElementById('roleSelectors');
             const allMembers = container.querySelectorAll('.member-selector');
-            
+
             // Store current values
             const memberData = [];
             allMembers.forEach((member, idx) => {
                 const roleSelect = member.querySelector('select[id^="role"]');
                 const pathSelect = member.querySelector('select[id^="path"]');
+                const traditionSelect = member.querySelector('select[id^="tradition"]');
                 memberData.push({
                     role: roleSelect ? roleSelect.value : '',
-                    path: pathSelect ? pathSelect.value : ''
+                    path: pathSelect ? pathSelect.value : '',
+                    tradition: traditionSelect ? traditionSelect.value : ''
                 });
             });
-            
+
             // Clear and rebuild
             container.innerHTML = '';
             currentMemberCount = memberData.length;
-            
+
             memberData.forEach((data, idx) => {
                 createMemberSelector(idx);
                 if (data.role) document.getElementById(`role${idx}`).value = data.role;
-                if (data.path) document.getElementById(`path${idx}`).value = data.path;
+                if (data.path) {
+                    document.getElementById(`path${idx}`).value = data.path;
+                    updateTraditionOptions(idx);
+                }
+                if (data.tradition) document.getElementById(`tradition${idx}`).value = data.tradition;
             });
-            
+
+            // Re-show tradition selectors if in advanced mode
+            if (advancedMode) {
+                document.querySelectorAll('.tradition-selector').forEach(el => {
+                    el.classList.add('show');
+                });
+            }
+
             updateAddMemberButton();
         }
 
@@ -1591,12 +2137,14 @@
             for (let i = 0; i < currentMemberCount; i++) {
                 const roleSelect = document.getElementById(`role${i}`);
                 const pathSelect = document.getElementById(`path${i}`);
-                
+                const traditionSelect = document.getElementById(`tradition${i}`);
+
                 if (roleSelect && pathSelect) {
                     const role = roleSelect.value;
                     const path = pathSelect.value;
-                    if (role || path) {
-                        members.push({ role, path });
+                    const tradition = traditionSelect ? traditionSelect.value : '';
+                    if (role || path || tradition) {
+                        members.push({ role, path, tradition });
                     }
                 }
             }
@@ -1606,56 +2154,63 @@
         function updateRituals() {
             const members = getSelectedRolesAndPaths();
             const resultsDiv = document.getElementById('ritualResults');
-            
+
             if (members.length === 0) {
                 resultsDiv.innerHTML = '<div class="no-results">Select coven roles and paths above to see available combination rituals...</div>';
                 return;
             }
-            
-            // Extract unique roles and paths
+
+            // Extract unique roles, paths, and traditions
             const selectedRoles = [...new Set(members.filter(m => m.role).map(m => m.role))];
             const selectedPaths = [...new Set(members.filter(m => m.path).map(m => m.path))];
-            
+            const selectedTraditions = [...new Set(members.filter(m => m.tradition).map(m => m.tradition))];
+
             const availableRituals = rituals.filter(ritual => {
+                // Check tradition-only rituals (only visible in advanced mode)
+                if (ritual.traditions && !ritual.roles && !ritual.paths) {
+                    if (!advancedMode) return false; // Hide tradition rituals in basic mode
+                    return ritual.traditions.every(trad => selectedTraditions.includes(trad));
+                }
+
                 // Check if ritual needs specific role+path combinations
-                if (ritual.roles && ritual.paths && ritual.roles.length === 1 && ritual.paths.length === 1 && !ritual.requiresRole && !ritual.requiresRoles) {
+                if (ritual.roles && ritual.paths && ritual.roles.length === 1 && ritual.paths.length === 1 && !ritual.requiresRole && !ritual.requiresRoles && !ritual.traditions) {
                     // This is a specific role+path combination ritual
-                    return members.some(m => 
+                    return members.some(m =>
                         ritual.roles.includes(m.role) && ritual.paths.includes(m.path)
                     );
                 }
-                
+
                 // Check role-only rituals
-                if (ritual.roles && !ritual.paths && !ritual.requiresRole && !ritual.requiresRoles) {
+                if (ritual.roles && !ritual.paths && !ritual.requiresRole && !ritual.requiresRoles && !ritual.traditions) {
                     return ritual.roles.every(role => selectedRoles.includes(role));
                 }
-                
+
                 // Check path-only rituals
-                if (ritual.paths && !ritual.roles && !ritual.requiresRole && !ritual.requiresRoles) {
+                if (ritual.paths && !ritual.roles && !ritual.requiresRole && !ritual.requiresRoles && !ritual.traditions) {
                     return ritual.paths.every(path => selectedPaths.includes(path));
                 }
-                
+
                 // Check complex rituals with paths + single required role
-                if (ritual.paths && ritual.requiresRole && !ritual.requiresRoles) {
+                if (ritual.paths && ritual.requiresRole && !ritual.requiresRoles && !ritual.traditions) {
                     const hasPaths = ritual.paths.every(path => selectedPaths.includes(path));
                     const hasRole = selectedRoles.includes(ritual.requiresRole);
                     return hasPaths && hasRole;
                 }
-                
+
                 // Check SUPER complex rituals with paths + multiple required roles
-                if (ritual.paths && ritual.requiresRoles) {
+                if (ritual.paths && ritual.requiresRoles && !ritual.traditions) {
                     const hasPaths = ritual.paths.every(path => selectedPaths.includes(path));
                     const hasAllRoles = ritual.requiresRoles.every(role => selectedRoles.includes(role));
                     return hasPaths && hasAllRoles;
                 }
-                
+
                 // Check rituals that need both roles AND paths (but not specific combinations)
-                if (ritual.roles && ritual.paths && (ritual.roles.length > 1 || ritual.paths.length > 1) && !ritual.requiresRole && !ritual.requiresRoles) {
+                if (ritual.roles && ritual.paths && (ritual.roles.length > 1 || ritual.paths.length > 1) && !ritual.requiresRole && !ritual.requiresRoles && !ritual.traditions) {
                     const hasRoles = ritual.roles.every(role => selectedRoles.includes(role));
                     const hasPaths = ritual.paths.every(path => selectedPaths.includes(path));
                     return hasRoles && hasPaths;
                 }
-                
+
                 return false;
             });
             
@@ -1685,13 +2240,16 @@
                 const riskHtml = ritual.risk ? `<div class="risk-warning">${ritual.risk}</div>` : '';
                 
                 let requirementText = '';
-                
+
                 // Display complexity if provided
                 if (ritual.complexity) {
                     requirementText = ritual.complexity;
                 } else {
                     // Build requirement text manually
-                    if (ritual.roles && ritual.paths && ritual.roles.length === 1 && ritual.paths.length === 1) {
+                    if (ritual.traditions && ritual.traditions.length > 0) {
+                        // Tradition-specific ritual
+                        requirementText = `Requires Traditions: ${ritual.traditions.join(' + ')}`;
+                    } else if (ritual.roles && ritual.paths && ritual.roles.length === 1 && ritual.paths.length === 1) {
                         // Specific role+path combo
                         requirementText = `Requires: ${ritual.roles[0]} who practices ${ritual.paths[0]}`;
                     } else {
