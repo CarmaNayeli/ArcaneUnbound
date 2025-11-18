@@ -93,6 +93,17 @@
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             position: relative;
+            display: none; /* Hidden by default */
+        }
+
+        .ai-toggle.unlocked {
+            display: inline-block; /* Show when unlocked */
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .ai-toggle::before {
@@ -102,6 +113,26 @@
         .ai-toggle.active {
             background: linear-gradient(135deg, #059669 0%, #047857 100%);
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+        }
+
+        .secret-corner {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            z-index: 1000;
+            opacity: 0.05;
+            transition: opacity 0.3s;
+        }
+
+        .secret-corner:hover {
+            opacity: 0.15;
+        }
+
+        .secret-corner.clicked {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
         }
 
         .coven-grid {
@@ -349,6 +380,9 @@
             <div class="ritual-count" id="ritualCount"></div>
             <div id="ritualsContainer"></div>
         </div>
+
+        <!-- Secret corner for unlocking Thread -->
+        <div class="secret-corner" id="secretCorner" onclick="handleSecretClick()"></div>
     </div>
 
     <script>
@@ -386,6 +420,58 @@
 
         let advancedMode = false;
         let aiPresent = false;
+
+        // Secret unlock mechanism for Thread
+        let secretClickCount = 0;
+        let keyBuffer = '';
+        let aiUnlocked = false;
+
+        function unlockAI() {
+            if (aiUnlocked) return;
+            aiUnlocked = true;
+            const btn = document.getElementById('aiBtn');
+            btn.classList.add('unlocked');
+
+            // Visual feedback
+            const corner = document.getElementById('secretCorner');
+            corner.style.background = 'radial-gradient(circle, rgba(16, 185, 129, 0.5) 0%, transparent 70%)';
+            setTimeout(() => {
+                corner.style.background = '';
+            }, 1000);
+        }
+
+        function handleSecretClick() {
+            secretClickCount++;
+            const corner = document.getElementById('secretCorner');
+            corner.classList.add('clicked');
+
+            setTimeout(() => {
+                corner.classList.remove('clicked');
+            }, 200);
+
+            if (secretClickCount >= 5) {
+                unlockAI();
+            }
+        }
+
+        // Keyboard listener for typing 'thread'
+        document.addEventListener('keydown', (e) => {
+            // Only track letter keys
+            if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+                keyBuffer += e.key.toLowerCase();
+
+                // Keep only last 10 characters
+                if (keyBuffer.length > 10) {
+                    keyBuffer = keyBuffer.slice(-10);
+                }
+
+                // Check if 'thread' is in the buffer
+                if (keyBuffer.includes('thread')) {
+                    unlockAI();
+                    keyBuffer = ''; // Clear buffer after unlock
+                }
+            }
+        });
 
         const RITUALS = [
             // === ROLE-ONLY RITUALS ===
