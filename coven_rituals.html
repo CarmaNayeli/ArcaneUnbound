@@ -445,6 +445,9 @@
         <header>
             <h1>🌙 Coven Combination Rituals 🌙</h1>
             <p class="subtitle">Discover the power of your coven's unique composition</p>
+            <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 0.9em;">
+                💡 <strong>Best Experience:</strong> Download this page (File → Save As) and open it locally to avoid connection issues!
+            </div>
         </header>
 
         <div id="loadingIndicator" class="loading">
@@ -737,44 +740,44 @@
                 
                 const errorHTML = isCorsError ? `
                     <div style="color: #ef4444;">
-                        ⚠️ CORS Error: Cannot connect to Supabase<br>
+                        ⚠️ Connection Blocked: CORS Restriction<br>
                         <small style="color: #9ca3af; margin-top: 10px; display: block;">
-                            <strong>The issue:</strong> Supabase is blocking requests from this domain (claude.ai).<br><br>
+                            <strong>The issue:</strong> Claude.ai artifacts run in a sandboxed environment that prevents direct database connections.<br><br>
                             
-                            <strong>🔧 How to fix:</strong><br>
-                            1. Open your Supabase dashboard<br>
-                            2. Go to <strong>Settings → API</strong><br>
-                            3. Find "<strong>CORS Settings</strong>"<br>
-                            4. Add these origins:<br>
-                            &nbsp;&nbsp;• <code>https://claude.ai</code><br>
-                            &nbsp;&nbsp;• <code>https://*.claude.ai</code><br>
-                            &nbsp;&nbsp;• Or use <code>*</code> for all origins (less secure)<br><br>
+                            <strong>✅ Easy Solution (Recommended):</strong><br>
+                            <span style="font-size: 1.2em; color: #10b981;">
+                                <strong>1.</strong> Right-click anywhere on this page<br>
+                                <strong>2.</strong> Select "Save Page As..." or "Save As..."<br>
+                                <strong>3.</strong> Save the HTML file to your computer<br>
+                                <strong>4.</strong> Double-click the saved file to open it<br>
+                                <strong>5.</strong> It will work perfectly! ✨
+                            </span><br><br>
                             
-                            <strong>📱 Alternative:</strong> Download this HTML file and run it locally<br>
-                            (File → Save Page, then open the saved file in your browser)
+                            When run locally, there are no CORS restrictions and your database will load instantly!<br><br>
+                            
+                            <strong>Alternative (Advanced):</strong><br>
+                            Deploy this HTML file to Vercel, Netlify, or GitHub Pages - Supabase will work from those domains.
                         </small>
                         <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                            <button onclick="alert('Right-click anywhere on this page and select \\'Save Page As...\\' to download!')" style="
+                                padding: 12px 24px;
+                                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                                border: none;
+                                border-radius: 5px;
+                                color: white;
+                                cursor: pointer;
+                                font-size: 1.1em;
+                                font-weight: bold;
+                            ">💾 How to Download</button>
                             <button onclick="location.reload()" style="
-                                padding: 10px 20px;
+                                padding: 12px 24px;
                                 background: #7c3aed;
                                 border: none;
                                 border-radius: 5px;
                                 color: white;
                                 cursor: pointer;
                                 font-size: 1em;
-                            ">🔄 Retry</button>
-                            <a href="https://supabase.com/dashboard/project/_/settings/api" 
-                               target="_blank"
-                               style="
-                                padding: 10px 20px;
-                                background: #10b981;
-                                border: none;
-                                border-radius: 5px;
-                                color: white;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 1em;
-                            ">⚙️ Supabase Settings</a>
+                            ">🔄 Retry (if you just deployed)</button>
                         </div>
                     </div>
                 ` : `
