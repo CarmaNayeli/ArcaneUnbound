@@ -1194,15 +1194,27 @@
             if (!select) return;
 
             const traditions = member.path ? TRADITIONS[member.path] : [];
+
+            // Clear tradition if path changed and current tradition isn't valid for new path
+            if (member.tradition && !traditions.includes(member.tradition)) {
+                members[index].tradition = '';
+            }
+
             select.innerHTML = '<option value="">-- Select Tradition --</option>' +
                 traditions.map(t => `<option value="${t}" ${member.tradition === t ? 'selected' : ''}>${t}</option>`).join('');
+
+            // Trigger update after dropdown changes
+            updateRituals();
         }
 
         function updateMember(index, field, value) {
             members[index][field] = value;
-            if (field === 'path' && !advancedMode) {
+
+            // Clear tradition when path changes
+            if (field === 'path') {
                 members[index].tradition = '';
             }
+
             updateRituals();
         }
 
@@ -1242,10 +1254,12 @@
                 'linear-gradient(135deg, #d97706 0%, #b45309 100%)' :
                 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
 
+            // Clear all traditions when turning off advanced mode
             if (!advancedMode) {
                 members.forEach(m => m.tradition = '');
             }
 
+            // Re-render everything and update rituals
             renderMembers();
             updateRituals();
         }
@@ -1260,21 +1274,28 @@
                 btn.classList.remove('active');
                 btn.textContent = '🤖 Include Thread';
             }
+
+            // Re-render everything and update rituals
             renderMembers();
             updateRituals();
         }
 
         function resetAll() {
+            // Reset all state to initial values
             members = [
                 { role: '', path: '', tradition: '' },
                 { role: '', path: '', tradition: '' }
             ];
             aiPresent = false;
             advancedMode = false;
+
+            // Reset UI buttons
             document.getElementById('advancedBtn').textContent = '🔮 Advanced Mode (Traditions)';
             document.getElementById('advancedBtn').style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
             document.getElementById('aiBtn').classList.remove('active');
             document.getElementById('aiBtn').textContent = '🤖 Include Thread';
+
+            // Force complete re-render
             renderMembers();
             updateRituals();
         }
