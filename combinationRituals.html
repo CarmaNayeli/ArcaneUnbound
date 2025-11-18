@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcane Unbound - Coven Combination Rituals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Garamond', 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #8b5cf6;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #c084fc;
+            text-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #a78bfa;
+            font-style: italic;
+        }
+
+        .selector-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #6366f1;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .member-selector {
+            background: rgba(30, 30, 50, 0.5);
+            border: 2px solid #4c1d95;
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .remove-member-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(220, 38, 38, 0.8);
+            border: 1px solid #dc2626;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .remove-member-btn:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: scale(1.1);
+        }
+
+        .member-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            text-align: center;
+            border-bottom: 1px solid #6366f1;
+            padding-bottom: 8px;
+            padding-right: 50px; /* Make room for remove button */
+        }
+
+        .role-selector {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .role-selector:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+
+        select {
+            padding: 12px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 2px solid #6366f1;
+            border-radius: 5px;
+            color: #e4e4e4;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select:hover {
+            border-color: #8b5cf6;
+            background: rgba(40, 40, 60, 0.9);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #c084fc;
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+        }
+
+        option {
+            background: #1a1a2e;
+            color: #e4e4e4;
+        }
+
+        .clear-button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .clear-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        .results-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #6366f1;
+            border-radius: 10px;
+            padding: 30px;
+            min-height: 200px;
+        }
+
+        .results-header {
+            color: #c084fc;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #6366f1;
+        }
+
+        .ritual-card {
+            background: rgba(20, 20, 40, 0.6);
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .ritual-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 25px rgba(139, 92, 246, 0.4);
+            border-color: #c084fc;
+        }
+
+        .ritual-name {
+            color: #fbbf24;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .ritual-power {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .power-low {
+            background: rgba(34, 197, 94, 0.3);
+            border: 1px solid #22c55e;
+            color: #86efac;
+        }
+
+        .power-moderate {
+            background: rgba(59, 130, 246, 0.3);
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+        }
+
+        .power-high {
+            background: rgba(168, 85, 247, 0.3);
+            border: 1px solid #a855f7;
+            color: #d8b4fe;
+        }
+
+        .power-very-high {
+            background: rgba(236, 72, 153, 0.3);
+            border: 1px solid #ec4899;
+            color: #fbcfe8;
+        }
+
+        .power-supreme {
+            background: rgba(239, 68, 68, 0.3);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        .power-mythic {
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.3), rgba(168, 85, 247, 0.3));
+            border: 1px solid #fbbf24;
+            color: #fde047;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.8); }
+        }
+
+        .ritual-summary {
+            color: #d1d5db;
+            font-style: italic;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .ritual-description {
+            color: #e4e4e4;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .ritual-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            color: #a78bfa;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #e4e4e4;
+            font-size: 0.95em;
+        }
+
+        .risk-warning {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 15px;
+            color: #fca5a5;
+        }
+
+        .risk-warning::before {
+            content: "⚠️ ";
+            font-weight: bold;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .role-requirement {
+            color: #8b5cf6;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .selector-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .member-selector {
+                padding: 12px;
+            }
+
+            .ritual-details {
+                grid-template-columns: 1fr;
+            }
+
+            .clear-button {
+                min-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌙 Coven Combination Rituals 🌙</h1>
+            <p class="subtitle">Discover the power of your coven's unique composition</p>
+        </header>
+
+        <div class="selector-panel">
+            <h2 style="color: #c084fc; margin-bottom: 10px;">Select Your Coven Members</h2>
+            <p style="color: #9ca3af; margin-bottom: 20px;">Choose the role AND path for each witch to see available rituals</p>
+            
+            <div class="selector-grid" id="roleSelectors">
+                <!-- Member selectors will be dynamically generated -->
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+                <button class="clear-button" id="addMemberBtn" onclick="addMember()" style="flex: 1; min-width: 200px;">
+                    ➕ Add Member (2/6)
+                </button>
+                <button class="clear-button" onclick="resetMembers()" style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                    🔄 Reset All
+                </button>
+            </div>
+        </div>
+
+        <div class="results-panel">
+            <h2 class="results-header">Available Rituals</h2>
+            <div id="ritualResults">
+                <div class="no-results">
+                    Select coven roles above to see available combination rituals...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const roles = [
+            "High Priestess",
+            "Keeper",
+            "Seeker",
+            "Hand",
+            "Voice",
+            "Hearth"
+        ];
+
+        const paths = [
+            "Crafter",
+            "Weaver",
+            "Medium",
+            "Channeler",
+            "Shapechanger",
+            "Warden"
+        ];
+
+        const rituals = [
+            // 2-ROLE COMBINATIONS
+            {
+                name: "Consecrated Sanctuary",
+                roles: ["High Priestess", "Keeper"],
+                power: "Moderate",
+                summary: "Create an absolutely unbreachable sacred space",
+                description: "Ward a location that cannot be entered by those with hostile intent. Lasts until sunrise/sunset. Even gods must ask permission.",
+                leader: "High Priestess",
+                pullType: "Major Arcana",
+                cooldown: "Once per day",
+                duration: "Until sunrise/sunset"
+            },
+            {
+                name: "Oracle's Vision",
+                roles: ["High Priestess", "Seeker"],
+                power: "Moderate",
+                summary: "See a specific truth about past, present, or near future",
+                description: "Ask one question and receive a true answer (though interpretation may vary). The Seeker researches while High Priestess channels divine insight.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (High Priestess), Minor (Seeker assists with Swords)",
+                cooldown: "Once per session",
+                duration: "Instant knowledge"
+            },
+            {
+                name: "Righteous Judgment",
+                roles: ["High Priestess", "Hand"],
+                power: "Moderate",
+                summary: "Pass supernatural judgment on a guilty party",
+                description: "Target must face consequences for their crimes. If truly guilty, they cannot resist punishment. If innocent, ritual fails and rebounds.",
+                leader: "High Priestess",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Immediate",
+                risk: "If target is innocent, casters take backlash"
+            },
+            {
+                name: "Proclamation of Truth",
+                roles: ["High Priestess", "Voice"],
+                power: "Moderate",
+                summary: "Make a binding declaration that reality must acknowledge",
+                description: "Speak a truth and it becomes undeniable to all who hear. 'This woman is innocent.' 'The killer is in this room.' Cannot be lies.",
+                leader: "High Priestess",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Until disproven or one scene"
+            },
+            {
+                name: "Blessing of the Coven",
+                roles: ["High Priestess", "Hearth"],
+                power: "Low",
+                summary: "Grant supernatural blessing to a person or place",
+                description: "Subject receives divine favor - good luck, protection from minor harm, sense of peace and wellbeing. Lasts one week.",
+                leader: "Both participate equally",
+                pullType: "Minor Arcana (both participate, pool totals)",
+                cooldown: "Once per day",
+                duration: "One week"
+            },
+            {
+                name: "The Hidden Archive",
+                roles: ["Keeper", "Seeker"],
+                power: "Moderate",
+                summary: "Create a secret library/vault that only the coven can access",
+                description: "Hide knowledge or objects in a pocket dimension. Only coven members can retrieve. Perfect security.",
+                leader: "Keeper",
+                pullType: "Minor Arcana (Keeper leads with Coins, Seeker assists with Swords)",
+                cooldown: "Once per week to create, no cooldown to access",
+                duration: "Permanent"
+            },
+            {
+                name: "Fortress Protocol",
+                roles: ["Keeper", "Hand"],
+                power: "Moderate",
+                summary: "Turn a location into a defensible stronghold",
+                description: "Building becomes a tactical fortress - all defenses enhanced, sight lines perfect, traps activate, defenders get +4 to combat.",
+                leader: "Both participate equally",
+                pullType: "Minor Arcana (both participate, pool totals)",
+                cooldown: "Once per day",
+                duration: "One battle/siege"
+            },
+            {
+                name: "The Threshold Accord",
+                roles: ["Keeper", "Voice"],
+                power: "Moderate",
+                summary: "Negotiate terms of entry/exit from a space",
+                description: "Set conditions for who can enter/leave. 'Only those who speak their true name.' 'None who have killed may enter.' 'Once inside, you cannot leave until dawn.' Lasts one day.",
+                leader: "Voice",
+                pullType: "Minor Arcana (Voice leads with Chalices, Keeper assists with Coins)",
+                cooldown: "Once per day",
+                duration: "One day"
+            },
+            {
+                name: "Safe Harbor",
+                roles: ["Keeper", "Hearth"],
+                power: "Low",
+                summary: "Make a space perfectly comfortable and restorative",
+                description: "Location becomes ideal for rest and healing. Everyone inside heals twice as fast, feels safe, sleeps without nightmares. Lasts 24 hours.",
+                leader: "Both participate equally",
+                pullType: "Minor Arcana (both participate, pool totals)",
+                cooldown: "Once per day",
+                duration: "24 hours"
+            },
+            {
+                name: "The Hunt",
+                roles: ["Seeker", "Hand"],
+                power: "Moderate",
+                summary: "Track and corner prey with supernatural certainty",
+                description: "Choose a target. Seeker finds them, Hand ensures they cannot escape. +6 to all rolls related to tracking/capturing this target.",
+                leader: "Both participate equally",
+                pullType: "Minor Arcana (Seeker uses Swords to track, Hand uses Coins to capture)",
+                cooldown: "Once per session",
+                duration: "Until target captured or 24 hours"
+            },
+            {
+                name: "Interrogation of Truth",
+                roles: ["Seeker", "Voice"],
+                power: "Moderate",
+                summary: "Extract truth from an unwilling subject",
+                description: "Target must answer questions truthfully. Seeker asks the right questions, Voice makes them unable to lie. Can resist with Chalices vs Difficulty 16.",
+                leader: "Voice",
+                pullType: "Minor Arcana (Voice leads with Chalices, Seeker assists with Swords)",
+                cooldown: "Once per day",
+                duration: "One conversation"
+            },
+            {
+                name: "Diagnosis and Cure",
+                roles: ["Seeker", "Hearth"],
+                power: "Low",
+                summary: "Identify and heal any ailment",
+                description: "Seeker identifies the exact problem (curse, disease, poison, wound). Hearth then knows exactly how to cure it. +4 to healing this specific ailment.",
+                leader: "Both participate equally",
+                pullType: "Minor Arcana (both participate, pool totals)",
+                cooldown: "None",
+                duration: "Instant"
+            },
+            {
+                name: "Execution of Accord",
+                roles: ["Hand", "Voice"],
+                power: "Moderate",
+                summary: "Enforce a deal or oath with supernatural power",
+                description: "Voice negotiates terms, Hand ensures compliance. Anyone who breaks the agreement suffers immediate consequence (chosen during ritual).",
+                leader: "Voice",
+                pullType: "Minor Arcana (Voice leads with Chalices, Hand enforces with Wands)",
+                cooldown: "Once per week",
+                duration: "Until oath fulfilled or broken"
+            },
+            {
+                name: "Controlled Destruction",
+                roles: ["Hand", "Hearth"],
+                power: "Moderate",
+                summary: "Destroy something without collateral damage",
+                description: "Hand destroys the target, Hearth ensures nothing else is harmed. Surgical demolition, precise violence, mercy killing.",
+                leader: "Hand",
+                pullType: "Minor Arcana (Hand leads with Coins/Wands, Hearth assists with Chalices)",
+                cooldown: "Once per day",
+                duration: "Instant"
+            },
+            {
+                name: "Community Gathering",
+                roles: ["Voice", "Hearth"],
+                power: "Low",
+                summary: "Bring people together in harmony",
+                description: "Host an event where everyone gets along, old grudges are set aside, new connections form. Perfect for parties, negotiations, community building.",
+                leader: "Both participate equally",
+                pullType: "Minor Arcana (both participate, pool totals)",
+                cooldown: "Once per week",
+                duration: "One event/gathering"
+            },
+            
+            // 3-ROLE COMBINATIONS
+            {
+                name: "Coven Home",
+                roles: ["High Priestess", "Keeper", "Hearth"],
+                power: "High",
+                summary: "Create a permanent coven sanctuary",
+                description: "Designate a location as the coven's home. It becomes: perfectly warded (Keeper), blessed and consecrated (High Priestess), comfortable and healing (Hearth). Cannot be destroyed by mundane means.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (High Priestess leads), both others assist with Minor pulls",
+                cooldown: "Once ever (permanent)",
+                duration: "Permanent until coven disbands"
+            },
+            {
+                name: "The Great Working",
+                roles: ["High Priestess", "Seeker", "Voice"],
+                power: "High",
+                summary: "Research, plan, and execute a perfect ritual",
+                description: "For one major magical working, you cannot fail. Seeker researches perfectly, High Priestess channels divine will, Voice speaks it into being.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (all three draw, High Priestess interprets)",
+                cooldown: "Once per story arc",
+                duration: "One ritual"
+            },
+            {
+                name: "Trial by Ordeal",
+                roles: ["High Priestess", "Hand", "Voice"],
+                power: "High",
+                summary: "Judge guilt and execute sentence in one ritual",
+                description: "Put someone on trial before the coven. Voice argues the case, High Priestess judges, Hand executes sentence. If guilty, sentence cannot be avoided. If innocent, they are proven so beyond doubt.",
+                leader: "High Priestess",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One trial",
+                risk: "If coven judges wrongly, they all take backlash"
+            },
+            {
+                name: "The Vault Heist",
+                roles: ["Keeper", "Seeker", "Hand"],
+                power: "High",
+                summary: "Break into anywhere, find anything, take it without trace",
+                description: "Seeker locates the target, Keeper breaches the defenses, Hand executes the theft. One perfect heist. +8 to all rolls.",
+                leader: "All three work in sequence",
+                pullType: "Minor Arcana (all three participate, pool totals)",
+                cooldown: "Once per session",
+                duration: "One heist/infiltration"
+            },
+            {
+                name: "The Covenant",
+                roles: ["Keeper", "Voice", "Hearth"],
+                power: "High",
+                summary: "Make a binding supernatural treaty between groups",
+                description: "Voice negotiates terms, Keeper sets boundaries, Hearth ensures care for all parties. Create a peace treaty, alliance, or agreement that has supernatural weight.",
+                leader: "Voice",
+                pullType: "Major Arcana",
+                cooldown: "Once per story arc",
+                duration: "Until broken or fulfilled"
+            },
+            {
+                name: "Field Medicine",
+                roles: ["Seeker", "Hand", "Hearth"],
+                power: "Moderate",
+                summary: "Perform emergency battlefield healing",
+                description: "Seeker diagnoses instantly, Hearth heals, Hand keeps enemies at bay. Heal someone who would otherwise die, even in the middle of combat. +6 to healing, target stabilizes immediately.",
+                leader: "Hearth",
+                pullType: "Minor Arcana (Hearth leads, others assist)",
+                cooldown: "Once per combat",
+                duration: "Instant"
+            },
+            {
+                name: "Sanctified Hunt",
+                roles: ["High Priestess", "Seeker", "Hand"],
+                power: "High",
+                summary: "Track and destroy a supernatural threat with divine authority",
+                description: "High Priestess identifies the target as worthy of destruction, Seeker finds them, Hand executes with divine blessing. Against this specific target: +8 to all rolls, cannot be stopped by mundane means.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (High Priestess), Minor (Seeker + Hand assist)",
+                cooldown: "Once per session",
+                duration: "One hunt"
+            },
+            {
+                name: "Voice of the People",
+                roles: ["High Priestess", "Voice", "Hearth"],
+                power: "High",
+                summary: "Speak for an entire community with supernatural authority",
+                description: "High Priestess grants authority, Voice speaks, Hearth ensures care for all. Make a proclamation on behalf of a community that carries the weight of every voice within it. Politicians must listen, deals must be honored.",
+                leader: "Voice",
+                pullType: "Major Arcana",
+                cooldown: "Once per story arc",
+                duration: "One negotiation/proclamation"
+            },
+            {
+                name: "Unbreakable Prison",
+                roles: ["High Priestess", "Keeper", "Hand"],
+                power: "High",
+                summary: "Imprison someone or something permanently",
+                description: "High Priestess judges and declares sentence, Keeper builds the prison, Hand ensures the prisoner stays. Create a supernatural prison that cannot be escaped or broken from outside.",
+                leader: "High Priestess",
+                pullType: "Major Arcana",
+                cooldown: "Once per story arc",
+                duration: "Permanent until coven releases them",
+                risk: "Maintaining the prison requires monthly rituals"
+            },
+            {
+                name: "The Perfect Lie",
+                roles: ["Keeper", "Seeker", "Voice"],
+                power: "High",
+                summary: "Create a lie so perfect no one can detect it",
+                description: "Seeker researches the perfect story, Voice tells it flawlessly, Keeper ensures no evidence contradicts it. Create a false history, alibi, or narrative that even magic cannot pierce.",
+                leader: "Voice",
+                pullType: "Minor Arcana (all three participate, pool totals)",
+                cooldown: "Once per session",
+                duration: "Until actively disproven with hard evidence"
+            },
+            {
+                name: "Network of Havens",
+                roles: ["Keeper", "Hearth", "Hand"],
+                power: "High",
+                summary: "Create multiple connected safe houses",
+                description: "Keeper wards them, Hearth makes them comfortable, Hand ensures defensibility. Create up to 5 locations that are: safe, hidden, comfortable, and connected. Coven can teleport between them.",
+                leader: "Keeper",
+                pullType: "Minor Arcana (all three participate, pool totals)",
+                cooldown: "Once per month",
+                duration: "Permanent until locations compromised"
+            },
+            {
+                name: "Mass Healing",
+                roles: ["High Priestess", "Hearth", "Seeker"],
+                power: "High",
+                summary: "Heal an entire community at once",
+                description: "High Priestess channels divine power, Seeker identifies all the sick and injured, Hearth distributes healing to everyone. Heal up to 100 people simultaneously of mundane ailments.",
+                leader: "Hearth",
+                pullType: "Major Arcana (High Priestess), Minor (Hearth + Seeker pool)",
+                cooldown: "Once per week",
+                duration: "Instant"
+            },
+            
+            // 4-ROLE COMBINATIONS
+            {
+                name: "The Court of Witches",
+                roles: ["High Priestess", "Keeper", "Voice", "Hand"],
+                power: "Very High",
+                summary: "Establish supernatural judicial authority",
+                description: "High Priestess presides as judge, Voice prosecutes/defends, Keeper ensures court security, Hand executes sentences. Create a supernatural court that can judge, sentence, and enforce against any magical being.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (High Priestess), Minor assists from others",
+                cooldown: "Once per story arc",
+                duration: "One court session"
+            },
+            {
+                name: "The Perfect Crime",
+                roles: ["Keeper", "Seeker", "Hand", "Voice"],
+                power: "Very High",
+                summary: "Plan and execute an impossible heist/infiltration",
+                description: "Seeker finds the target and plans, Keeper breaches defenses, Hand executes, Voice covers tracks. +10 to all rolls. Cannot fail unless catastrophically bad Major Arcana pull.",
+                leader: "All work in sequence",
+                pullType: "Minor Arcana (all pool totals)",
+                cooldown: "Once per story arc",
+                duration: "One major operation"
+            },
+            {
+                name: "Establishment of Sanctuary",
+                roles: ["High Priestess", "Keeper", "Hearth", "Seeker"],
+                power: "Very High",
+                summary: "Found a permanent supernatural haven",
+                description: "High Priestess consecrates, Keeper wards, Hearth nurtures, Seeker ensures it remains hidden. Create a location that is: blessed, impenetrable, healing, and impossible to find unless invited.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (all participate)",
+                cooldown: "Once per campaign",
+                duration: "Permanent"
+            },
+            {
+                name: "Circle of Protection",
+                roles: ["High Priestess", "Keeper", "Hand", "Hearth"],
+                power: "Very High",
+                summary: "Protect an entire community from supernatural threat",
+                description: "High Priestess blesses, Keeper wards, Hand defends, Hearth comforts. Protect up to 1000 people from one specific supernatural threat for one month.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (High Priestess), Minor assists",
+                cooldown: "Once per month",
+                duration: "One month"
+            },
+            {
+                name: "The Great Revelation",
+                roles: ["High Priestess", "Seeker", "Voice", "Hearth"],
+                power: "Very High",
+                summary: "Reveal a great truth to the world",
+                description: "Seeker uncovers the truth, High Priestess confirms it, Voice proclaims it, Hearth ensures people can accept it. Reveal something that changes everyone's understanding. Truth cannot be denied.",
+                leader: "Voice",
+                pullType: "Major Arcana (all participate)",
+                cooldown: "Once per campaign",
+                duration: "Permanent knowledge",
+                risk: "World-changing consequences"
+            },
+            
+            // 5-ROLE COMBINATIONS
+            {
+                name: "Coven Ascendant",
+                roles: ["High Priestess", "Keeper", "Seeker", "Hand", "Voice"],
+                power: "Supreme",
+                summary: "The coven acts as a unified supernatural force",
+                description: "All five roles work in perfect harmony. For one major working: the coven cannot fail, cannot be stopped, and reality bends to their will. This is the pinnacle of coven magic.",
+                leader: "High Priestess coordinates all",
+                pullType: "Major Arcana (all five draw, High Priestess interprets all)",
+                cooldown: "Once per campaign (maybe)",
+                duration: "One monumental working"
+            },
+            {
+                name: "Foundation of a New Order",
+                roles: ["High Priestess", "Keeper", "Seeker", "Voice", "Hearth"],
+                power: "Supreme",
+                summary: "Establish a new magical tradition or institution",
+                description: "High Priestess provides vision, Keeper protects it, Seeker documents it, Voice proclaims it, Hearth nurtures it. Create something that will last generations: a school, a new tradition, a sanctuary for all witches.",
+                leader: "High Priestess",
+                pullType: "Major Arcana (all participate)",
+                cooldown: "Once per campaign",
+                duration: "Permanent legacy"
+            },
+            {
+                name: "The Perfect Operation",
+                roles: ["Keeper", "Seeker", "Hand", "Voice", "Hearth"],
+                power: "Supreme",
+                summary: "Execute an impossible mission flawlessly",
+                description: "Seeker plans, Keeper secures, Hand acts, Voice covers, Hearth supports. Accomplish anything: break into any vault, overthrow any ruler, steal any treasure, rescue anyone. Success is guaranteed.",
+                leader: "All work as perfect team",
+                pullType: "Minor Arcana (all pool - will be astronomical)",
+                cooldown: "Once per campaign",
+                duration: "One perfect mission"
+            },
+            
+            // 6-ROLE COMBINATION
+            {
+                name: "The Complete Circle",
+                roles: ["High Priestess", "Keeper", "Seeker", "Hand", "Voice", "Hearth"],
+                power: "Mythic",
+                summary: "The full coven performs the impossible",
+                description: "When all six roles are present and working in harmony, the coven can perform miracles. Reshape reality, break fundamental magical laws, challenge gods, create permanent change to the world. This is the stuff of legend.",
+                leader: "The Circle itself - no single leader",
+                pullType: "Major Arcana (all six draw, interpret collectively)",
+                cooldown: "Once per campaign if you're lucky",
+                duration: "Permanent world-changing effects",
+                risk: "Such power draws attention from EVERYTHING"
+            },
+
+            // PATH-SPECIFIC RITUALS (No role requirements, only paths)
+            {
+                name: "Fate-Bound Fortress",
+                paths: ["Weaver", "Warden"],
+                power: "High",
+                summary: "Create a fortress that exists across multiple timelines",
+                description: "Weaver sees all possible futures where the fortress stands, Warden builds it in the most defensible reality. The fortress cannot fall because it exists in timelines where it never did.",
+                leader: "Warden builds, Weaver guides",
+                pullType: "Major Arcana (both draw, interpret together)",
+                cooldown: "Once per story arc",
+                duration: "Permanent until both casters die"
+            },
+            {
+                name: "Crafted Destiny",
+                paths: ["Crafter", "Weaver"],
+                power: "High",
+                summary: "Create an object that will change fate",
+                description: "Weaver identifies the thread of destiny, Crafter makes the object that pulls it. Create something mundane that becomes pivotal: the sword that kills the king, the letter that starts the war, the key that opens everything.",
+                leader: "Crafter makes, Weaver ensures destiny",
+                pullType: "Major Arcana (Weaver), Minor (Crafter with Coins)",
+                cooldown: "Once per session",
+                duration: "Until object fulfills its destiny"
+            },
+            {
+                name: "Channel the Dead",
+                paths: ["Medium", "Channeler"],
+                power: "Moderate",
+                summary: "Possess a body with a summoned spirit and channel their power",
+                description: "Medium summons the spirit, Channeler lets them possess a willing host with full access to their abilities. Bring back a legendary warrior, ancient sage, or powerful witch temporarily.",
+                leader: "Medium summons, Channeler empowers",
+                pullType: "Minor Arcana (both pool totals)",
+                cooldown: "Once per day",
+                duration: "One scene or combat",
+                risk: "Spirit may not want to leave"
+            },
+            {
+                name: "Living Arsenal",
+                paths: ["Crafter", "Channeler"],
+                power: "Moderate",
+                summary: "Craft weapons that channel raw magical power",
+                description: "Crafter makes the object, Channeler fills it with pure energy. Create weapons that hurt supernatural beings, armor that deflects magic, tools that reshape reality.",
+                leader: "Both work together",
+                pullType: "Minor Arcana (both pool totals)",
+                cooldown: "Once per day",
+                duration: "Permanent items (but limited charges)"
+            },
+            {
+                name: "Perfect Transformation",
+                paths: ["Shapechanger", "Weaver"],
+                power: "High",
+                summary: "Become exactly who you need to be in this moment",
+                description: "Weaver sees who you need to be, Shapechanger makes you become them perfectly. Not just appearance - personality, memories, abilities. You ARE them until the working ends.",
+                leader: "Shapechanger transforms",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One scene",
+                risk: "May forget who you really are"
+            },
+            {
+                name: "Phantom Army",
+                paths: ["Medium", "Shapechanger"],
+                power: "High",
+                summary: "Summon spirits and give them physical form",
+                description: "Medium calls the dead, Shapechanger gives them temporary bodies. Create an army of ghosts made flesh, soldiers from every era, reinforcements from beyond the veil.",
+                leader: "Both work together",
+                pullType: "Major Arcana (both draw)",
+                cooldown: "Once per story arc",
+                duration: "One battle",
+                risk: "The dead may not wish to return"
+            },
+            {
+                name: "Inevitable Barrier",
+                paths: ["Warden", "Weaver"],
+                power: "High",
+                summary: "Create a ward that cannot be breached in any timeline",
+                description: "Warden builds the barrier, Weaver ensures it holds in every possible future. This barrier WILL NOT FALL. Anyone who tries to breach it discovers they were always going to fail.",
+                leader: "Warden",
+                pullType: "Major Arcana (Warden), Minor (Weaver assists with Swords)",
+                cooldown: "Once per session",
+                duration: "Until Warden dismisses it"
+            },
+            {
+                name: "Curse-Craft",
+                paths: ["Crafter", "Medium"],
+                power: "Moderate",
+                summary: "Create cursed objects that bind spirits",
+                description: "Medium binds a spirit (willing or not) into an object Crafter makes. Create haunted items, possessed weapons, artifacts with personalities. The spirit grants power but demands price.",
+                leader: "Crafter",
+                pullType: "Minor Arcana (both pool)",
+                cooldown: "None",
+                duration: "Permanent",
+                risk: "Spirits can be unpredictable"
+            },
+            {
+                name: "Reality Breach",
+                paths: ["Warden", "Channeler"],
+                power: "Very High",
+                summary: "Tear open reality and unleash raw chaos",
+                description: "Warden breaks the boundaries of reality itself, Channeler pours pure magical force through the breach. Devastating, uncontrolled, world-changing. Use as last resort.",
+                leader: "Both (no one controls this)",
+                pullType: "Major Arcana (both draw, GM interprets)",
+                cooldown: "Once per campaign",
+                duration: "Until reality heals (days to weeks)",
+                risk: "CATASTROPHIC. Reality scars permanently. Everything supernatural notices."
+            },
+            {
+                name: "Probability Storm",
+                paths: ["Weaver", "Channeler"],
+                power: "High",
+                summary: "Channel power through manipulated fate",
+                description: "Weaver identifies the most powerful possible outcomes, Channeler forces them all to happen simultaneously. Rain lightning while the sun shines, be in two places at once, win and lose the same fight.",
+                leader: "Channeler",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One scene",
+                risk: "Paradoxes may damage reality"
+            },
+            {
+                name: "Metamorphic Crafting",
+                paths: ["Crafter", "Shapechanger"],
+                power: "Moderate",
+                summary: "Create objects that change form as needed",
+                description: "Crafter makes the base object, Shapechanger gives it fluidity. A weapon that becomes any weapon, a key that opens any lock, clothes that adapt to any situation.",
+                leader: "Crafter",
+                pullType: "Minor Arcana (both pool)",
+                cooldown: "Once per week",
+                duration: "Permanent adaptive item"
+            },
+            {
+                name: "Possession Ward",
+                paths: ["Warden", "Medium"],
+                power: "Moderate",
+                summary: "Create barriers that spirits cannot cross",
+                description: "Warden builds the ward, Medium ensures it stops spiritual entities. Perfect for keeping ghosts out, preventing possession, blocking spiritual attack.",
+                leader: "Warden",
+                pullType: "Minor Arcana (Warden leads with Coins, Medium assists with Chalices)",
+                cooldown: "Once per day",
+                duration: "Until dismissed or broken"
+            },
+            {
+                name: "Shapeshifter's Sanctuary",
+                paths: ["Shapechanger", "Warden"],
+                power: "Moderate",
+                summary: "Create a space where transformation is effortless",
+                description: "Warden bounds the space, Shapechanger fills it with transformative energy. Within this sanctuary, all shapechanging is instant, costs nothing, and perfect. Safe space for transformers.",
+                leader: "Warden",
+                pullType: "Minor Arcana (both pool)",
+                cooldown: "Once per day",
+                duration: "24 hours"
+            },
+            {
+                name: "Channeled Prophecy",
+                paths: ["Weaver", "Medium"],
+                power: "Moderate",
+                summary: "Contact spirits who can see fate",
+                description: "Medium channels prophetic spirits, Weaver interprets the threads they reveal. Get accurate visions of possible futures from those who've transcended time.",
+                leader: "Medium",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "Instant vision"
+            },
+            {
+                name: "Storm of Shapes",
+                paths: ["Shapechanger", "Channeler"],
+                power: "High",
+                summary: "Transform while wielding massive elemental power",
+                description: "Channeler calls the storm/fire/flood, Shapechanger becomes it. Transform into living lightning, a sentient tsunami, a wildfire with purpose. Devastating.",
+                leader: "Shapechanger",
+                pullType: "Major Arcana",
+                cooldown: "Once per story arc",
+                duration: "One scene",
+                risk: "May forget your original form"
+            },
+
+            // ROLE+PATH COMBINATIONS (Specific combinations required)
+            {
+                name: "The Keeper's Fortress",
+                roles: ["Keeper"],
+                paths: ["Warden"],
+                power: "Very High",
+                summary: "The ultimate defensive position",
+                description: "A Keeper who is also a Warden creates the perfect stronghold. No one enters without permission, no attack can breach the walls, defenders have every advantage. This is the mythical 'unassailable fortress'.",
+                leader: "The Keeper/Warden",
+                pullType: "Major Arcana",
+                cooldown: "Once per campaign",
+                duration: "Permanent",
+                risk: "Maintaining it requires constant vigilance"
+            },
+            {
+                name: "The Voice's Perfect Lie",
+                roles: ["Voice"],
+                paths: ["Weaver"],
+                power: "High",
+                summary: "Tell a lie that becomes truth",
+                description: "A Voice who is also a Weaver can speak something false and make destiny bend to accommodate it. Tell a lie convincingly enough and reality rewrites itself to make it true.",
+                leader: "Voice/Weaver",
+                pullType: "Major Arcana",
+                cooldown: "Once per story arc",
+                duration: "Permanent (reality changed)",
+                risk: "Unpredictable consequences"
+            },
+            {
+                name: "The Hand's Unstoppable Force",
+                roles: ["Hand"],
+                paths: ["Channeler"],
+                power: "High",
+                summary: "Become a living weapon of pure power",
+                description: "A Hand who is also a Channeler becomes an avatar of destruction. Channel unlimited power through your warrior's skill. Nothing can stand against you in combat.",
+                leader: "Hand/Channeler",
+                pullType: "Major Arcana",
+                cooldown: "Once per session",
+                duration: "One combat",
+                risk: "Difficult to stop once started"
+            },
+            {
+                name: "The Seeker's Perfect Research",
+                roles: ["Seeker"],
+                paths: ["Weaver"],
+                power: "Moderate",
+                summary: "Research across timelines to find the answer",
+                description: "A Seeker who is also a Weaver doesn't just research in this timeline. They research in every possible timeline and bring back the best answer. Cannot fail to find information that exists anywhere.",
+                leader: "Seeker/Weaver",
+                pullType: "Minor Arcana (Swords + Swords)",
+                cooldown: "Once per session",
+                duration: "Instant knowledge"
+            },
+            {
+                name: "The Hearth's Eternal Comfort",
+                roles: ["Hearth"],
+                paths: ["Crafter"],
+                power: "Moderate",
+                summary: "Create food/comfort that heals body and soul",
+                description: "A Hearth who is also a Crafter makes tangible comfort. Food that heals any wound, blankets that cure nightmares, homes that mend broken hearts. Craft healing made physical.",
+                leader: "Hearth/Crafter",
+                pullType: "Minor Arcana (Chalices + Coins)",
+                cooldown: "None",
+                duration: "Permanent items"
+            },
+            {
+                name: "The High Priestess's Divine Channel",
+                roles: ["High Priestess"],
+                paths: ["Medium"],
+                power: "Very High",
+                summary: "Channel divine entities directly",
+                description: "A High Priestess who is also a Medium can serve as a perfect conduit for gods, ancestors, or cosmic forces. Become the voice of divinity itself. When you speak, gods speak through you.",
+                leader: "High Priestess/Medium",
+                pullType: "Major Arcana",
+                cooldown: "Once per story arc",
+                duration: "One scene",
+                risk: "The divine may not wish to leave"
+            },
+            {
+                name: "The Keeper's Living Wards",
+                roles: ["Keeper"],
+                paths: ["Shapechanger"],
+                power: "High",
+                summary: "Create protections that adapt and evolve",
+                description: "A Keeper who is also a Shapechanger makes wards that transform to counter threats. Fire-proof against fire attacks, physical barriers against physical assault, anti-magic against spells. Perfect adaptive defense.",
+                leader: "Keeper/Shapechanger",
+                pullType: "Minor Arcana (Coins + Wands/Chalices)",
+                cooldown: "Once per day",
+                duration: "Until dismissed"
+            },
+            {
+                name: "The Voice's Spirit Negotiation",
+                roles: ["Voice"],
+                paths: ["Medium"],
+                power: "Moderate",
+                summary: "Negotiate with any entity, living or dead",
+                description: "A Voice who is also a Medium can broker deals with anyone - spirits, demons, gods, the dead. Supernatural diplomacy at its finest. No entity is beyond negotiation.",
+                leader: "Voice/Medium",
+                pullType: "Minor Arcana (Chalices + Chalices)",
+                cooldown: "Once per day",
+                duration: "One negotiation"
+            },
+            {
+                name: "The Hand's Battle Craft",
+                roles: ["Hand"],
+                paths: ["Crafter"],
+                power: "Moderate",
+                summary: "Instantly create perfect weapons mid-combat",
+                description: "A Hand who is also a Crafter can manifest weapons from nothing in battle. Never disarmed, always armed with exactly what you need. Improvised weapons become legendary.",
+                leader: "Hand/Crafter",
+                pullType: "Minor Arcana (Coins + Coins)",
+                cooldown: "None (but requires materials)",
+                duration: "Combat duration"
+            },
+            {
+                name: "The Seeker's Crafted Knowledge",
+                roles: ["Seeker"],
+                paths: ["Crafter"],
+                power: "Low",
+                summary: "Create perfect reference materials and research tools",
+                description: "A Seeker who is also a Crafter makes libraries, grimoires, research tools that enhance investigation. +4 to all research when using your crafted tools.",
+                leader: "Seeker/Crafter",
+                pullType: "Minor Arcana (Swords + Coins)",
+                cooldown: "Once per week",
+                duration: "Permanent tools"
+            },
+            {
+                name: "The Hearth's Transformative Care",
+                roles: ["Hearth"],
+                paths: ["Shapechanger"],
+                power: "Moderate",
+                summary: "Heal by transforming injury into health",
+                description: "A Hearth who is also a Shapechanger doesn't bandage wounds - they transform them into wholeness. Reshape broken bones, transform disease to health, make scars vanish.",
+                leader: "Hearth/Shapechanger",
+                pullType: "Minor Arcana (Chalices + Wands/Chalices)",
+                cooldown: "Once per day per person",
+                duration: "Permanent healing"
+            },
+
+            // COMPLEX MULTI-REQUIREMENT RITUALS
+            // These require specific path combinations + enabling roles
+
+            {
+                name: "Blessed Crafting",
+                paths: ["Crafter", "Medium"],
+                requiresRole: "High Priestess",
+                power: "High",
+                summary: "Create sacred objects inhabited by consecrated spirits",
+                description: "Crafter makes the vessel, Medium binds the spirit, but only the High Priestess can consecrate the union to make it holy. Create relics, blessed weapons, sanctified tools that channel divine power.",
+                leader: "High Priestess consecrates",
+                pullType: "Major Arcana (High Priestess), Minor (Crafter + Medium assist)",
+                cooldown: "Once per week",
+                duration: "Permanent holy relic",
+                complexity: "Requires: Crafter + Medium + High Priestess present"
+            },
+            {
+                name: "Guardian Spirit Binding",
+                paths: ["Medium", "Warden"],
+                requiresRole: "Keeper",
+                power: "High",
+                summary: "Bind protective spirits into permanent wards",
+                description: "Medium summons protective spirits, Warden binds them into barriers, but only a Keeper can make them permanent guardians of a space. Creates living wards that think, adapt, and protect eternally.",
+                leader: "Keeper makes permanent",
+                pullType: "Major Arcana (Keeper), Minor (Medium + Warden pool)",
+                cooldown: "Once per story arc",
+                duration: "Permanent until dispelled",
+                complexity: "Requires: Medium + Warden + Keeper present"
+            },
+            {
+                name: "Enforced Destiny",
+                paths: ["Weaver", "Channeler"],
+                requiresRole: "Hand",
+                power: "Very High",
+                summary: "Force fate to occur through overwhelming power",
+                description: "Weaver identifies what MUST happen, Channeler provides the raw power, but only the Hand can physically enforce it against resistance. Make prophecy inevitable through force.",
+                leader: "Hand enforces",
+                pullType: "Major Arcana (Weaver + Hand), Channeler provides power",
+                cooldown: "Once per story arc",
+                duration: "Until prophecy fulfilled",
+                risk: "Forcing fate has consequences",
+                complexity: "Requires: Weaver + Channeler + Hand present"
+            },
+            {
+                name: "Storm Sanctuary",
+                paths: ["Channeler", "Warden"],
+                requiresRole: "Keeper",
+                power: "High",
+                summary: "Create a fortress protected by living storms",
+                description: "Channeler summons the storm, Warden shapes it into walls, but only a Keeper can maintain it as permanent protection. A sanctuary surrounded by lightning and thunder that never fades.",
+                leader: "Keeper maintains",
+                pullType: "Major Arcana (Channeler), Minor (Warden + Keeper pool)",
+                cooldown: "Once per session",
+                duration: "Until Keeper dismisses",
+                complexity: "Requires: Channeler + Warden + Keeper present"
+            },
+            {
+                name: "Truth-Spoken Into Being",
+                paths: ["Weaver", "Crafter"],
+                requiresRole: "Voice",
+                power: "Very High",
+                summary: "Craft fate itself through spoken word",
+                description: "Weaver sees the thread, Crafter makes it tangible, but only a Voice can speak it into inevitable reality. Say what will be, make it, and it MUST come to pass.",
+                leader: "Voice speaks",
+                pullType: "Major Arcana (Voice + Weaver), Crafter manifests",
+                cooldown: "Once per campaign",
+                duration: "Until prophecy manifests",
+                risk: "Words cannot be unsaid",
+                complexity: "Requires: Weaver + Crafter + Voice present"
+            },
+            {
+                name: "Healing the Timeline",
+                paths: ["Weaver", "Shapechanger"],
+                requiresRole: "Hearth",
+                power: "Supreme",
+                summary: "Heal someone by reshaping their personal timeline",
+                description: "Weaver finds the timeline where they were never injured, Shapechanger transforms them into that version, but only a Hearth can make the healing gentle and complete. Rewrite personal history.",
+                leader: "Hearth ensures wholeness",
+                pullType: "Major Arcana (all three draw)",
+                cooldown: "Once per story arc",
+                duration: "Permanent healing",
+                risk: "May have unintended timeline effects",
+                complexity: "Requires: Weaver + Shapechanger + Hearth present"
+            },
+            {
+                name: "Research Across the Veil",
+                paths: ["Medium", "Crafter"],
+                requiresRole: "Seeker",
+                power: "Moderate",
+                summary: "Consult dead scholars while crafting their knowledge",
+                description: "Medium channels dead experts, Crafter makes their knowledge tangible, but only a Seeker knows what questions to ask. Create books that write themselves with knowledge from every era.",
+                leader: "Seeker directs research",
+                pullType: "Minor Arcana (all three pool)",
+                cooldown: "Once per week",
+                duration: "Permanent knowledge artifacts",
+                complexity: "Requires: Medium + Crafter + Seeker present"
+            },
+            {
+                name: "Inevitable Transformation",
+                paths: ["Weaver", "Shapechanger"],
+                requiresRole: "Hand",
+                power: "High",
+                summary: "Force someone to become what they must be",
+                description: "Weaver sees their destined form, Shapechanger can make the change, but only a Hand can force it upon the unwilling. Transform enemies into harmless creatures, allies into their perfect selves.",
+                leader: "Hand forces change",
+                pullType: "Major Arcana (Weaver + Hand), Shapechanger transforms",
+                cooldown: "Once per session",
+                duration: "Permanent unless dispelled",
+                risk: "Involuntary transformation is traumatic",
+                complexity: "Requires: Weaver + Shapechanger + Hand present"
+            },
+            {
+                name: "Negotiated Reality",
+                paths: ["Warden", "Shapechanger"],
+                requiresRole: "Voice",
+                power: "High",
+                summary: "Negotiate the rules of a space with reality itself",
+                description: "Warden controls boundaries, Shapechanger makes them fluid, but only a Voice can actually bargain with reality. Create zones where different rules apply - no gravity, reversed time, impossible geometry.",
+                leader: "Voice negotiates",
+                pullType: "Major Arcana (Voice), Minor (Warden + Shapechanger assist)",
+                cooldown: "Once per session",
+                duration: "One scene",
+                risk: "Reality may demand payment",
+                complexity: "Requires: Warden + Shapechanger + Voice present"
+            },
+            {
+                name: "Blessed War Machine",
+                paths: ["Crafter", "Channeler"],
+                requiresRole: "High Priestess",
+                power: "Very High",
+                summary: "Create divine weapons of righteous destruction",
+                description: "Crafter forges the weapon, Channeler fills it with devastating power, but only the High Priestess can consecrate it for holy war. Create weapons that smite evil and spare the innocent.",
+                leader: "High Priestess consecrates",
+                pullType: "Major Arcana (High Priestess), Minor (Crafter + Channeler pool)",
+                cooldown: "Once per story arc",
+                duration: "Permanent divine weapon",
+                complexity: "Requires: Crafter + Channeler + High Priestess present"
+            },
+            {
+                name: "The Comfort of What Must Be",
+                paths: ["Weaver", "Medium"],
+                requiresRole: "Hearth",
+                power: "Moderate",
+                summary: "Help someone accept their fate with peace",
+                description: "Weaver reveals destiny, Medium connects with their spirit, but only a Hearth can make acceptance gentle. Help the dying pass peacefully, help the grieving accept loss, help heroes accept their burden.",
+                leader: "Hearth provides comfort",
+                pullType: "Minor Arcana (all pool, focus on Chalices)",
+                cooldown: "None",
+                duration: "Permanent peace",
+                complexity: "Requires: Weaver + Medium + Hearth present"
+            },
+            {
+                name: "Investigation Beyond Death",
+                paths: ["Medium", "Channeler"],
+                requiresRole: "Seeker",
+                power: "Moderate",
+                summary: "Interview witnesses from beyond the grave with perfect recall",
+                description: "Medium summons the dead, Channeler gives them power to manifest, but only a Seeker knows what questions matter. Get testimony from murder victims, consult with ancient witnesses, research by asking those who were there.",
+                leader: "Seeker asks questions",
+                pullType: "Minor Arcana (Seeker leads, others assist)",
+                cooldown: "Once per day",
+                duration: "One interrogation",
+                complexity: "Requires: Medium + Channeler + Seeker present"
+            },
+            {
+                name: "Fortress of Shifting Walls",
+                paths: ["Warden", "Shapechanger"],
+                requiresRole: "Keeper",
+                power: "High",
+                summary: "Create a stronghold that adapts to every threat",
+                description: "Warden builds boundaries, Shapechanger makes them fluid, but only a Keeper can maintain the perfect balance. Walls that become moats, doors that vanish, defenses that evolve.",
+                leader: "Keeper maintains balance",
+                pullType: "Minor Arcana (all pool)",
+                cooldown: "Once per session",
+                duration: "Until Keeper dismisses",
+                complexity: "Requires: Warden + Shapechanger + Keeper present"
+            },
+            {
+                name: "Diplomatic Channel",
+                paths: ["Channeler", "Medium"],
+                requiresRole: "Voice",
+                power: "Moderate",
+                summary: "Negotiate with gods, demons, and cosmic forces",
+                description: "Medium contacts the entity, Channeler allows them to manifest safely, but only a Voice can actually bargain with beings of such power. Make deals with the divine, negotiate with demons, treat with forces beyond mortal ken.",
+                leader: "Voice negotiates",
+                pullType: "Major Arcana (Voice + Medium), Channeler provides safe channel",
+                cooldown: "Once per session",
+                duration: "One negotiation",
+                risk: "Powerful beings are dangerous to contact",
+                complexity: "Requires: Channeler + Medium + Voice present"
+            },
+            {
+                name: "Crafted From Pure Potential",
+                paths: ["Crafter", "Weaver"],
+                requiresRole: "Seeker",
+                power: "High",
+                summary: "Research and create objects that could never naturally exist",
+                description: "Seeker identifies what's needed, Weaver finds the thread of possibility, Crafter manifests the impossible. Create items that violate natural law - perpetual motion machines, true AI, philosopher's stones.",
+                leader: "Seeker defines parameters",
+                pullType: "Major Arcana (Weaver), Minor (Seeker + Crafter pool)",
+                cooldown: "Once per story arc",
+                duration: "Permanent impossible object",
+                risk: "Unnatural items may have unintended effects",
+                complexity: "Requires: Crafter + Weaver + Seeker present"
+            },
+            {
+                name: "Sanctuary of Gentle Transformation",
+                paths: ["Shapechanger", "Crafter"],
+                requiresRole: "Hearth",
+                power: "Moderate",
+                summary: "Create a healing space where bodies remake themselves",
+                description: "Crafter builds the sanctuary, Shapechanger fills it with transformative energy, but only a Hearth can make the changes healing instead of horrifying. A place where broken bodies slowly reshape into wholeness.",
+                leader: "Hearth ensures gentle healing",
+                pullType: "Minor Arcana (all pool)",
+                cooldown: "Once per week",
+                duration: "24 hours of healing space",
+                complexity: "Requires: Shapechanger + Crafter + Hearth present"
+            },
+            {
+                name: "Enforced Protection",
+                paths: ["Warden", "Channeler"],
+                requiresRole: "Hand",
+                power: "High",
+                summary: "Create barriers that fight back",
+                description: "Warden creates the boundaries, Channeler gives them power, but only a Hand can make them actively aggressive. Wards that don't just stop attacks - they strike back with devastating force.",
+                leader: "Hand makes them aggressive",
+                pullType: "Minor Arcana (all pool)",
+                cooldown: "Once per day",
+                duration: "24 hours",
+                risk: "May harm allies who test boundaries",
+                complexity: "Requires: Warden + Channeler + Hand present"
+            },
+            {
+                name: "The Spirit Speaks Through Me",
+                paths: ["Medium", "Shapechanger"],
+                requiresRole: "Voice",
+                power: "High",
+                summary: "Perfectly embody a spirit to deliver their message",
+                description: "Medium channels the spirit, Shapechanger transforms you into them, but only a Voice can truly speak with their authority. Become the perfect vessel - look like them, sound like them, convince everyone you ARE them.",
+                leader: "Voice speaks with authority",
+                pullType: "Major Arcana (Medium + Voice), Shapechanger transforms",
+                cooldown: "Once per session",
+                duration: "One scene",
+                risk: "May not want to return to yourself",
+                complexity: "Requires: Medium + Shapechanger + Voice present"
+            },
+            {
+                name: "Consecrated Destiny",
+                paths: ["Weaver", "Medium"],
+                requiresRole: "High Priestess",
+                power: "Very High",
+                summary: "Invoke divine authority to ensure prophecy",
+                description: "Weaver sees the thread, Medium channels divine will, but only the High Priestess can speak prophecy with absolute authority. Declare what WILL be with the weight of divinity behind it.",
+                leader: "High Priestess proclaims",
+                pullType: "Major Arcana (all three draw)",
+                cooldown: "Once per campaign",
+                duration: "Until fulfilled",
+                risk: "Cannot be undone once spoken",
+                complexity: "Requires: Weaver + Medium + High Priestess present"
+            },
+
+            // SUPER COMPLEX: Multiple roles + Multiple paths required
+            {
+                name: "The Perfect Heist Sanctified",
+                paths: ["Crafter", "Warden"],
+                requiresRoles: ["Hand", "Seeker", "Voice"],
+                power: "Supreme",
+                summary: "The ultimate crime with perfect planning",
+                description: "Crafter makes the tools, Warden breaches the defenses, Seeker plans it perfectly, Hand executes flawlessly, Voice covers all tracks. Steal what was stolen, recover what was lost. The impossible heist succeeds.",
+                leader: "All work in perfect coordination",
+                pullType: "Major Arcana (multiple draws)",
+                cooldown: "Once per campaign",
+                duration: "One perfect crime",
+                risk: "Still technically a crime",
+                complexity: "Requires: Crafter + Warden + Hand + Seeker + Voice all present"
+            },
+            {
+                name: "Community of Eternal Safety",
+                paths: ["Warden", "Crafter", "Medium"],
+                requiresRoles: ["Keeper", "Hearth"],
+                power: "Supreme",
+                summary: "Build a community protected by walls, spirits, and love",
+                description: "Warden makes boundaries, Crafter builds the homes, Medium binds protective spirits, Keeper maintains eternal vigilance, Hearth makes it a true home. Create a place where nothing evil can enter and everyone is safe forever.",
+                leader: "Keeper coordinates all",
+                pullType: "Major Arcana (multiple draws)",
+                cooldown: "Once per campaign",
+                duration: "Permanent sanctuary",
+                complexity: "Requires: Warden + Crafter + Medium + Keeper + Hearth all present"
+            },
+            {
+                name: "Research, Craft, and Speak Truth",
+                paths: ["Crafter", "Weaver", "Medium"],
+                requiresRoles: ["Seeker", "Voice", "High Priestess"],
+                power: "Mythic",
+                summary: "Create undeniable proof of ultimate truth",
+                description: "Seeker researches across all knowledge, Weaver sees all timelines, Medium consults every soul who ever lived, Crafter makes the evidence tangible, Voice speaks it clearly, High Priestess confirms it with divine authority. Create truth so perfect no one can deny it. Solve any mystery. Answer any question. Know anything.",
+                leader: "High Priestess confirms truth",
+                pullType: "Major Arcana (all draw)",
+                cooldown: "Once per campaign if ever",
+                duration: "Permanent knowledge",
+                risk: "Some truths should stay hidden",
+                complexity: "Requires: Crafter + Weaver + Medium + Seeker + Voice + High Priestess all present"
+            }
+        ];
+
+        let currentMemberCount = 2;
+        const maxMembers = 6;
+
+        // Initialize selectors
+        function initializeSelectors() {
+            createMemberSelector(0);
+            createMemberSelector(1);
+            updateAddMemberButton();
+            updateRituals();
+        }
+
+        function createMemberSelector(index) {
+            const container = document.getElementById('roleSelectors');
+            
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'member-selector';
+            memberDiv.id = `member${index}`;
+            
+            const title = document.createElement('div');
+            title.className = 'member-title';
+            title.textContent = `Member ${index + 1}`;
+            memberDiv.appendChild(title);
+            
+            // Add remove button (only for members 3+)
+            if (index >= 2) {
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-member-btn';
+                removeBtn.textContent = '✕';
+                removeBtn.onclick = () => removeMember(index);
+                memberDiv.appendChild(removeBtn);
+            }
+            
+            // Role selector
+            const roleSelectorDiv = document.createElement('div');
+            roleSelectorDiv.className = 'role-selector';
+            
+            const roleLabel = document.createElement('label');
+            roleLabel.textContent = 'Role';
+            
+            const roleSelect = document.createElement('select');
+            roleSelect.id = `role${index}`;
+            roleSelect.onchange = updateRituals;
+            
+            const roleEmptyOption = document.createElement('option');
+            roleEmptyOption.value = '';
+            roleEmptyOption.textContent = '-- No Role --';
+            roleSelect.appendChild(roleEmptyOption);
+            
+            roles.forEach(role => {
+                const option = document.createElement('option');
+                option.value = role;
+                option.textContent = role;
+                roleSelect.appendChild(option);
+            });
+            
+            roleSelectorDiv.appendChild(roleLabel);
+            roleSelectorDiv.appendChild(roleSelect);
+            memberDiv.appendChild(roleSelectorDiv);
+            
+            // Path selector
+            const pathSelectorDiv = document.createElement('div');
+            pathSelectorDiv.className = 'role-selector';
+            
+            const pathLabel = document.createElement('label');
+            pathLabel.textContent = 'Path';
+            
+            const pathSelect = document.createElement('select');
+            pathSelect.id = `path${index}`;
+            pathSelect.onchange = updateRituals;
+            
+            const pathEmptyOption = document.createElement('option');
+            pathEmptyOption.value = '';
+            pathEmptyOption.textContent = '-- No Path --';
+            pathSelect.appendChild(pathEmptyOption);
+            
+            paths.forEach(path => {
+                const option = document.createElement('option');
+                option.value = path;
+                option.textContent = path;
+                pathSelect.appendChild(option);
+            });
+            
+            pathSelectorDiv.appendChild(pathLabel);
+            pathSelectorDiv.appendChild(pathSelect);
+            memberDiv.appendChild(pathSelectorDiv);
+            
+            container.appendChild(memberDiv);
+        }
+
+        function addMember() {
+            if (currentMemberCount < maxMembers) {
+                createMemberSelector(currentMemberCount);
+                currentMemberCount++;
+                updateAddMemberButton();
+                updateRituals();
+            }
+        }
+
+        function removeMember(index) {
+            const memberDiv = document.getElementById(`member${index}`);
+            if (memberDiv) {
+                memberDiv.remove();
+                
+                // Rebuild the display to fix numbering
+                rebuildMemberDisplay();
+                updateRituals();
+            }
+        }
+
+        function rebuildMemberDisplay() {
+            const container = document.getElementById('roleSelectors');
+            const allMembers = container.querySelectorAll('.member-selector');
+            
+            // Store current values
+            const memberData = [];
+            allMembers.forEach((member, idx) => {
+                const roleSelect = member.querySelector('select[id^="role"]');
+                const pathSelect = member.querySelector('select[id^="path"]');
+                memberData.push({
+                    role: roleSelect ? roleSelect.value : '',
+                    path: pathSelect ? pathSelect.value : ''
+                });
+            });
+            
+            // Clear and rebuild
+            container.innerHTML = '';
+            currentMemberCount = memberData.length;
+            
+            memberData.forEach((data, idx) => {
+                createMemberSelector(idx);
+                if (data.role) document.getElementById(`role${idx}`).value = data.role;
+                if (data.path) document.getElementById(`path${idx}`).value = data.path;
+            });
+            
+            updateAddMemberButton();
+        }
+
+        function updateAddMemberButton() {
+            const btn = document.getElementById('addMemberBtn');
+            if (currentMemberCount >= maxMembers) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.textContent = '✓ Max Members (6/6)';
+            } else {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.textContent = `➕ Add Member (${currentMemberCount}/6)`;
+            }
+        }
+
+        function resetMembers() {
+            const container = document.getElementById('roleSelectors');
+            container.innerHTML = '';
+            currentMemberCount = 2;
+            initializeSelectors();
+        }
+
+        function getSelectedRolesAndPaths() {
+            const members = [];
+            for (let i = 0; i < currentMemberCount; i++) {
+                const roleSelect = document.getElementById(`role${i}`);
+                const pathSelect = document.getElementById(`path${i}`);
+                
+                if (roleSelect && pathSelect) {
+                    const role = roleSelect.value;
+                    const path = pathSelect.value;
+                    if (role || path) {
+                        members.push({ role, path });
+                    }
+                }
+            }
+            return members;
+        }
+
+        function updateRituals() {
+            const members = getSelectedRolesAndPaths();
+            const resultsDiv = document.getElementById('ritualResults');
+            
+            if (members.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results">Select coven roles and paths above to see available combination rituals...</div>';
+                return;
+            }
+            
+            // Extract unique roles and paths
+            const selectedRoles = [...new Set(members.filter(m => m.role).map(m => m.role))];
+            const selectedPaths = [...new Set(members.filter(m => m.path).map(m => m.path))];
+            
+            const availableRituals = rituals.filter(ritual => {
+                // Check if ritual needs specific role+path combinations
+                if (ritual.roles && ritual.paths && ritual.roles.length === 1 && ritual.paths.length === 1 && !ritual.requiresRole && !ritual.requiresRoles) {
+                    // This is a specific role+path combination ritual
+                    return members.some(m => 
+                        ritual.roles.includes(m.role) && ritual.paths.includes(m.path)
+                    );
+                }
+                
+                // Check role-only rituals
+                if (ritual.roles && !ritual.paths && !ritual.requiresRole && !ritual.requiresRoles) {
+                    return ritual.roles.every(role => selectedRoles.includes(role));
+                }
+                
+                // Check path-only rituals
+                if (ritual.paths && !ritual.roles && !ritual.requiresRole && !ritual.requiresRoles) {
+                    return ritual.paths.every(path => selectedPaths.includes(path));
+                }
+                
+                // Check complex rituals with paths + single required role
+                if (ritual.paths && ritual.requiresRole && !ritual.requiresRoles) {
+                    const hasPaths = ritual.paths.every(path => selectedPaths.includes(path));
+                    const hasRole = selectedRoles.includes(ritual.requiresRole);
+                    return hasPaths && hasRole;
+                }
+                
+                // Check SUPER complex rituals with paths + multiple required roles
+                if (ritual.paths && ritual.requiresRoles) {
+                    const hasPaths = ritual.paths.every(path => selectedPaths.includes(path));
+                    const hasAllRoles = ritual.requiresRoles.every(role => selectedRoles.includes(role));
+                    return hasPaths && hasAllRoles;
+                }
+                
+                // Check rituals that need both roles AND paths (but not specific combinations)
+                if (ritual.roles && ritual.paths && (ritual.roles.length > 1 || ritual.paths.length > 1) && !ritual.requiresRole && !ritual.requiresRoles) {
+                    const hasRoles = ritual.roles.every(role => selectedRoles.includes(role));
+                    const hasPaths = ritual.paths.every(path => selectedPaths.includes(path));
+                    return hasRoles && hasPaths;
+                }
+                
+                return false;
+            });
+            
+            if (availableRituals.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        No combination rituals available for this coven composition.<br>
+                        <small style="color: #6b7280; margin-top: 10px; display: block;">Try adding more members or different role/path combinations.</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by power level and complexity
+            const powerOrder = { "Low": 1, "Moderate": 2, "High": 3, "Very High": 4, "Supreme": 5, "Mythic": 6 };
+            availableRituals.sort((a, b) => {
+                const aCount = (a.roles?.length || 0) + (a.paths?.length || 0) + (a.requiresRole ? 1 : 0) + (a.requiresRoles?.length || 0);
+                const bCount = (b.roles?.length || 0) + (b.paths?.length || 0) + (b.requiresRole ? 1 : 0) + (b.requiresRoles?.length || 0);
+                if (aCount !== bCount) {
+                    return aCount - bCount;
+                }
+                return powerOrder[a.power] - powerOrder[b.power];
+            });
+            
+            resultsDiv.innerHTML = availableRituals.map(ritual => {
+                const powerClass = ritual.power.toLowerCase().replace(' ', '-');
+                const riskHtml = ritual.risk ? `<div class="risk-warning">${ritual.risk}</div>` : '';
+                
+                let requirementText = '';
+                
+                // Display complexity if provided
+                if (ritual.complexity) {
+                    requirementText = ritual.complexity;
+                } else {
+                    // Build requirement text manually
+                    if (ritual.roles && ritual.paths && ritual.roles.length === 1 && ritual.paths.length === 1) {
+                        // Specific role+path combo
+                        requirementText = `Requires: ${ritual.roles[0]} who practices ${ritual.paths[0]}`;
+                    } else {
+                        // Multiple requirements
+                        const parts = [];
+                        if (ritual.roles && ritual.roles.length > 0) {
+                            parts.push(`Roles: ${ritual.roles.join(', ')}`);
+                        }
+                        if (ritual.paths && ritual.paths.length > 0) {
+                            parts.push(`Paths: ${ritual.paths.join(', ')}`);
+                        }
+                        if (ritual.requiresRole) {
+                            parts.push(`+ ${ritual.requiresRole} must be present`);
+                        }
+                        if (ritual.requiresRoles && ritual.requiresRoles.length > 0) {
+                            parts.push(`+ ${ritual.requiresRoles.join(', ')} must be present`);
+                        }
+                        requirementText = `Requires: ${parts.join(' | ')}`;
+                    }
+                }
+                
+                return `
+                    <div class="ritual-card">
+                        <div class="ritual-name">${ritual.name}</div>
+                        <div class="role-requirement">${requirementText}</div>
+                        <span class="ritual-power power-${powerClass}">${ritual.power} Power</span>
+                        <div class="ritual-summary">${ritual.summary}</div>
+                        <div class="ritual-description">${ritual.description}</div>
+                        <div class="ritual-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Leader</span>
+                                <span class="detail-value">${ritual.leader}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Card Pull</span>
+                                <span class="detail-value">${ritual.pullType}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cooldown</span>
+                                <span class="detail-value">${ritual.cooldown}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Duration</span>
+                                <span class="detail-value">${ritual.duration}</span>
+                            </div>
+                        </div>
+                        ${riskHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            initializeSelectors();
+        };
+    </script>
+</body>
+</html>
