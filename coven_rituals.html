@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcane Unbound - Coven Ritual Lookup</title>
+    <title>Arcane Unbound - Coven Combination Rituals</title>
     <style>
         * {
             margin: 0;
@@ -12,1456 +12,1196 @@
         }
 
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #1a0033 0%, #2d1b4e 50%, #1a0033 100%);
-            color: #e6d5ff;
+            font-family: 'Garamond', 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
             padding: 20px;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
+            padding: 40px 20px;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
             border: 2px solid #8b5cf6;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
         }
 
         h1 {
-            font-size: 3em;
-            color: #a78bfa;
-            text-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+            font-size: 2.5em;
+            color: #c084fc;
+            text-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
             margin-bottom: 10px;
+            letter-spacing: 2px;
         }
 
         .subtitle {
             font-size: 1.2em;
-            color: #c4b5fd;
+            color: #a78bfa;
             font-style: italic;
         }
 
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.5em;
+            color: #a78bfa;
+            font-style: italic;
         }
 
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-        }
-
-        button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .add-member-btn {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-            color: white;
-        }
-
-        .reset-btn {
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            color: white;
-        }
-
-        .advanced-toggle {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-        }
-
-        .ai-toggle {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            position: relative;
-            display: none; /* Hidden by default */
-        }
-
-        .ai-toggle.unlocked {
-            display: inline-block; /* Show when unlocked */
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .ai-toggle::before {
-            content: '🤖 ';
-        }
-
-        .ai-toggle.active {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-        }
-
-        .secret-corner {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            cursor: pointer;
-            z-index: 1000;
-            opacity: 0.05;
-            transition: opacity 0.3s;
-        }
-
-        .secret-corner:hover {
-            opacity: 0.15;
-        }
-
-        .secret-corner.clicked {
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
-        }
-
-        .coven-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .member-card {
+        .selector-panel {
             background: rgba(0, 0, 0, 0.4);
-            border: 2px solid #6d28d9;
-            border-radius: 12px;
-            padding: 20px;
+            border: 2px solid #6366f1;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .member-selector {
+            background: rgba(30, 30, 50, 0.5);
+            border: 2px solid #4c1d95;
+            border-radius: 8px;
+            padding: 15px;
             position: relative;
-            transition: all 0.3s ease;
         }
 
-        .member-card:hover {
-            border-color: #8b5cf6;
-            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.3);
+        .remove-member-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(220, 38, 38, 0.8);
+            border: 1px solid #dc2626;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: all 0.2s;
         }
 
-        .member-card.ai-card {
-            border-color: #10b981;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
-        }
-
-        .member-card.ai-card:hover {
-            border-color: #34d399;
-            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        .remove-member-btn:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: scale(1.1);
         }
 
         .member-title {
-            font-size: 1.3em;
-            color: #a78bfa;
-            margin-bottom: 15px;
+            color: #fbbf24;
             font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            text-align: center;
+            border-bottom: 1px solid #6366f1;
+            padding-bottom: 8px;
+            padding-right: 50px;
         }
 
-        .ai-card .member-title {
-            color: #34d399;
+        .role-selector {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
         }
 
-        .remove-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(220, 38, 38, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 18px;
-            line-height: 1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .role-selector:last-child {
+            margin-bottom: 0;
         }
 
-        .member-card:hover .remove-btn {
-            opacity: 1;
-        }
-
-        .remove-btn:hover {
-            background: rgba(220, 38, 38, 1);
+        label {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 0.95em;
         }
 
         select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #6d28d9;
-            border-radius: 6px;
-            color: #e6d5ff;
-            font-size: 14px;
+            padding: 12px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 2px solid #6366f1;
+            border-radius: 5px;
+            color: #e4e4e4;
+            font-size: 1em;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select:hover {
+            border-color: #8b5cf6;
+            background: rgba(40, 40, 60, 0.9);
         }
 
         select:focus {
             outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+            border-color: #c084fc;
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
         }
 
-        select option {
-            background: #1a0033;
-            color: #e6d5ff;
+        option {
+            background: #1a1a2e;
+            color: #e4e4e4;
         }
 
-        .tradition-select {
-            border-color: #f59e0b;
-        }
-
-        .tradition-select:focus {
-            border-color: #fbbf24;
-            box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
-        }
-
-        label {
-            display: block;
-            font-size: 0.9em;
-            color: #c4b5fd;
-            margin-bottom: 5px;
+        .clear-button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.1em;
             font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .rituals-section {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
+        .clear-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        .results-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #6366f1;
+            border-radius: 10px;
             padding: 30px;
+            min-height: 200px;
         }
 
-        .rituals-title {
-            font-size: 2em;
-            color: #a78bfa;
+        .results-header {
+            color: #c084fc;
+            font-size: 1.5em;
             margin-bottom: 20px;
-            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #6366f1;
         }
 
         .ritual-card {
-            background: rgba(109, 40, 217, 0.1);
-            border-left: 4px solid #8b5cf6;
+            background: rgba(20, 20, 40, 0.6);
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .ritual-card:hover {
-            background: rgba(139, 92, 246, 0.15);
-            transform: translateX(5px);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 25px rgba(139, 92, 246, 0.4);
+            border-color: #c084fc;
+        }
+
+        .ritual-card.ai-ritual {
+            border-color: #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .ritual-card.ai-ritual:hover {
+            border-color: #34d399;
+            box-shadow: 0 5px 25px rgba(16, 185, 129, 0.5);
         }
 
         .ritual-name {
-            font-size: 1.5em;
-            color: #c4b5fd;
-            margin-bottom: 10px;
+            color: #fbbf24;
+            font-size: 1.4em;
             font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        .ritual-requirements {
-            color: #a78bfa;
-            margin-bottom: 10px;
-            font-size: 0.95em;
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .ritual-power {
             display: inline-block;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
             font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .power-low { background: #10b981; color: white; }
-        .power-moderate { background: #f59e0b; color: white; }
-        .power-high { background: #ef4444; color: white; }
-        .power-very-high { background: #dc2626; color: white; }
-        .power-supreme { background: #7c2d12; color: white; }
+        .power-low {
+            background: rgba(34, 197, 94, 0.3);
+            border: 1px solid #22c55e;
+            color: #86efac;
+        }
+
+        .power-moderate {
+            background: rgba(59, 130, 246, 0.3);
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+        }
+
+        .power-high {
+            background: rgba(168, 85, 247, 0.3);
+            border: 1px solid #a855f7;
+            color: #d8b4fe;
+        }
+
+        .power-very-high {
+            background: rgba(236, 72, 153, 0.3);
+            border: 1px solid #ec4899;
+            color: #fbcfe8;
+        }
+
+        .power-supreme {
+            background: rgba(239, 68, 68, 0.3);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
         .power-mythic {
-            background: linear-gradient(45deg, #7c2d12, #dc2626, #7c2d12);
-            color: white;
-            animation: glow 2s ease-in-out infinite;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.3), rgba(168, 85, 247, 0.3));
+            border: 1px solid #fbbf24;
+            color: #fde047;
+            animation: glow 2s infinite;
         }
 
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 5px rgba(220, 38, 38, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.8); }
+            0%, 100% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.8); }
+        }
+
+        .ritual-summary {
+            color: #d1d5db;
+            font-style: italic;
+            margin-bottom: 15px;
+            font-size: 1.1em;
         }
 
         .ritual-description {
-            color: #e6d5ff;
+            color: #e4e4e4;
             line-height: 1.6;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .ritual-effect {
-            color: #d8b4fe;
-            font-style: italic;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-
-        .ritual-meta {
-            color: #a78bfa;
-            font-size: 0.9em;
-            margin-top: 10px;
-            padding-top: 10px;
+        .ritual-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
             border-top: 1px solid rgba(139, 92, 246, 0.3);
         }
 
-        .no-rituals {
-            text-align: center;
-            color: #a78bfa;
-            font-size: 1.2em;
-            padding: 40px;
-            font-style: italic;
+        .detail-item {
+            display: flex;
+            flex-direction: column;
         }
 
-        .ritual-count {
-            text-align: center;
-            color: #c4b5fd;
-            font-size: 1.1em;
-            margin-bottom: 20px;
+        .detail-label {
+            color: #a78bfa;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #e4e4e4;
+            font-size: 0.95em;
+        }
+
+        .risk-warning {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 15px;
+            color: #fca5a5;
+        }
+
+        .risk-warning::before {
+            content: "⚠️ ";
             font-weight: bold;
         }
 
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .role-requirement {
+            color: #8b5cf6;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .mode-toggle {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid #8b5cf6;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .mode-toggle label {
+            color: #c084fc;
+            font-size: 1.2em;
+            margin: 0;
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(100, 100, 120, 0.5);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 33px;
+        }
+
+        .tradition-selector {
+            display: none;
+        }
+
+        .tradition-selector.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mode-description {
+            color: #9ca3af;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
-            h1 { font-size: 2em; }
-            .coven-grid { grid-template-columns: 1fr; }
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .selector-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .member-selector {
+                padding: 12px;
+            }
+
+            .ritual-details {
+                grid-template-columns: 1fr;
+            }
+
+            .clear-button {
+                min-width: 100% !important;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>✨ Coven Ritual Lookup ✨</h1>
-            <p class="subtitle">Discover the power of combined magic</p>
+            <h1>🌙 Coven Combination Rituals 🌙</h1>
+            <p class="subtitle">Discover the power of your coven's unique composition</p>
         </header>
 
-        <div class="controls">
-            <button class="add-member-btn" id="addMemberBtn" onclick="addMember()">
-                ➕ Add Member (<span id="memberCount">2</span>/6)
-            </button>
-            <button class="advanced-toggle" id="advancedBtn" onclick="toggleAdvanced()">
-                🔮 Advanced Mode (Traditions)
-            </button>
-            <button class="ai-toggle" id="aiBtn" onclick="toggleAI()">
-                Include Thread
-            </button>
-            <button class="reset-btn" onclick="resetAll()">
-                🔄 Reset All
-            </button>
+        <div id="loadingIndicator" class="loading">
+            Loading rituals from the grimoire...
         </div>
 
-        <div class="coven-grid" id="covenGrid"></div>
+        <div id="mainContent" style="display: none;">
+            <div class="selector-panel">
+                <div class="mode-toggle">
+                    <div class="toggle-switch" id="modeToggle" onclick="toggleAdvancedMode()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <label for="modeToggle" onclick="toggleAdvancedMode()">
+                        <span id="modeLabel">Basic Mode</span>
+                        <div class="mode-description" id="modeDescription">Role & Path combinations only</div>
+                    </label>
+                </div>
 
-        <div class="rituals-section">
-            <h2 class="rituals-title">🌙 Available Rituals 🌙</h2>
-            <div class="ritual-count" id="ritualCount"></div>
-            <div id="ritualsContainer"></div>
+                <h2 style="color: #c084fc; margin-bottom: 10px;">Select Your Coven Members</h2>
+                <p style="color: #9ca3af; margin-bottom: 20px;">
+                    Choose the role AND path for each witch to see available rituals<br>
+                    <small style="color: #8b5cf6; font-weight: bold;">💡 Enable Advanced Mode above to select specific Traditions!</small>
+                </p>
+
+                <div class="selector-grid" id="roleSelectors">
+                    <!-- Member selectors will be dynamically generated -->
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+                    <button class="clear-button" id="addMemberBtn" onclick="addMember()" style="flex: 1; min-width: 200px;">
+                        ➕ Add Member (2/6)
+                    </button>
+                    <button class="clear-button" onclick="resetMembers()" style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                        🔄 Reset All
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-panel">
+                <h2 class="results-header">Available Rituals</h2>
+                <div id="ritualResults">
+                    <div class="no-results">
+                        Select coven roles above to see available combination rituals...
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- Secret corner for unlocking Thread -->
-        <div class="secret-corner" id="secretCorner" onclick="handleSecretClick()"></div>
     </div>
 
     <script>
-        const ROLES = [
-            'High Priestess',
-            'Keeper',
-            'Seeker',
-            'Hand',
-            'Voice',
-            'Hearth'
+        // Supabase configuration
+        const SUPABASE_URL = 'https://whmhaktrfkvclcsbhqdt.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobWhha3RyZmt2Y2xjc2JocWR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0ODQ0MjIsImV4cCI6MjA3OTA2MDQyMn0.zVKhBpFzLjlra8wDHWtTrj_amRB-4ZC_sTPSbzXwf1E';
+
+        // Easter egg state
+        let threadUnlocked = false;
+        let typedString = '';
+        let lastTypedTime = Date.now();
+
+        const roles = [
+            "High Priestess",
+            "Keeper",
+            "Seeker",
+            "Hand",
+            "Voice",
+            "Hearth"
         ];
 
-        const PATHS = [
-            'Crafter',
-            'Weaver',
-            'Medium',
-            'Channeler',
-            'Shapechanger',
-            'Warden'
+        const paths = [
+            "Crafter",
+            "Weaver",
+            "Medium",
+            "Channeler",
+            "Shapechanger",
+            "Warden"
         ];
 
-        const TRADITIONS = {
-            'Crafter': ['Songbird', 'Nourishers', 'Ritualists', 'Binders', 'Shapers', 'Inscribers'],
-            'Weaver': ['Oracle', 'Augur', 'Chronologist', 'Pattern Seeker', 'Invoker', 'Synchronist'],
-            'Medium': ['Death Keeper', 'Demon Broker', 'Fae-Touched', 'Spirit Guide', 'Vessel', 'Familiar Keeper'],
-            'Channeler': ['Elementalist', 'Force Witch', 'Psychic', 'Luminary', 'Soul Shaper', 'Void Caller'],
-            'Shapechanger': ['Glamourist', 'Wild Magic', 'Multiplier', 'Borrower', 'Metamorph', 'Blood Crafter'],
-            'Warden': ['Sanctuary Maker', 'Threshold Keeper', 'Labyrinth Builder', 'Liberator', 'Veil Breaker', 'Ward Breaker']
+        const traditions = {
+            "Crafter": [
+                { name: "Songbird", summary: "Sound and resonance magic through music" },
+                { name: "Nourishers", summary: "Magic through consumption and grown things" },
+                { name: "Ritualists", summary: "Prepared enchanted objects" },
+                { name: "Binders", summary: "Knots, ties, and sympathetic connections" },
+                { name: "Shapers", summary: "Transform raw materials into magical objects" },
+                { name: "Inscribers", summary: "Marking and symbolism magic" }
+            ],
+            "Weaver": [
+                { name: "Oracle", summary: "Divination tools (tarot, bones, runes)" },
+                { name: "Augur", summary: "Read natural signs and omens" },
+                { name: "Chronologist", summary: "Time and temporal manipulation" },
+                { name: "Pattern Seeker", summary: "Mathematics and logical fate" },
+                { name: "Invoker", summary: "Petition higher powers" },
+                { name: "Synchronist", summary: "Meaningful coincidence and chaos" }
+            ],
+            "Medium": [
+                { name: "Death Keeper", summary: "Connect with the dead" },
+                { name: "Demon Broker", summary: "Negotiate with infernal entities" },
+                { name: "Fae-Touched", summary: "Deal with the fair folk" },
+                { name: "Spirit Guide", summary: "Dedicated protective spirit" },
+                { name: "Vessel", summary: "Allow entity possession" },
+                { name: "Familiar Keeper", summary: "Magical animal companion bond" }
+            ],
+            "Channeler": [
+                { name: "Elementalist", summary: "Classical elements (fire, water, air, earth)" },
+                { name: "Force Witch", summary: "Natural laws and planetary forces" },
+                { name: "Psychic", summary: "Mental energy and telepathy" },
+                { name: "Luminary", summary: "Light and darkness" },
+                { name: "Soul Shaper", summary: "Spiritual energy and life force" },
+                { name: "Void Caller", summary: "Entropy and nothingness" }
+            ],
+            "Shapechanger": [
+                { name: "Glamourist", summary: "Illusion and appearance changes" },
+                { name: "Wild Magic", summary: "Random, chaotic transformation" },
+                { name: "Multiplier", summary: "Create copies of yourself" },
+                { name: "Borrower", summary: "Take other people's shapes" },
+                { name: "Metamorph", summary: "Transform body's actual structure" },
+                { name: "Blood Crafter", summary: "Blood magic and sacrifice" }
+            ],
+            "Warden": [
+                { name: "Sanctuary Maker", summary: "Build safe, protected spaces" },
+                { name: "Threshold Keeper", summary: "Build and control doorways" },
+                { name: "Labyrinth Builder", summary: "Create impossible spaces" },
+                { name: "Liberator", summary: "Break bonds and curses" },
+                { name: "Veil Breaker", summary: "Break reality's boundaries" },
+                { name: "Ward Breaker", summary: "Destroy protections and defenses" }
+            ]
         };
 
-        let members = [
-            { role: '', path: '', tradition: '' },
-            { role: '', path: '', tradition: '' }
-        ];
-
         let advancedMode = false;
-        let aiPresent = false;
+        let allRituals = [];
+        let currentMemberCount = 2;
+        const maxMembers = 6;
 
-        // Secret unlock mechanism for Thread
-        let secretClickCount = 0;
-        let keyBuffer = '';
-        let aiUnlocked = false;
-
-        function unlockAI() {
-            if (aiUnlocked) return;
-            aiUnlocked = true;
-            const btn = document.getElementById('aiBtn');
-            btn.classList.add('unlocked');
-
-            // Visual feedback
-            const corner = document.getElementById('secretCorner');
-            corner.style.background = 'radial-gradient(circle, rgba(16, 185, 129, 0.5) 0%, transparent 70%)';
-            setTimeout(() => {
-                corner.style.background = '';
-            }, 1000);
-        }
-
-        function handleSecretClick() {
-            secretClickCount++;
-            const corner = document.getElementById('secretCorner');
-            corner.classList.add('clicked');
-
-            setTimeout(() => {
-                corner.classList.remove('clicked');
-            }, 200);
-
-            if (secretClickCount >= 5) {
-                unlockAI();
+        // Listen for "thread" typing
+        document.addEventListener('keypress', function(e) {
+            const now = Date.now();
+            // Reset if more than 2 seconds between keypresses
+            if (now - lastTypedTime > 2000) {
+                typedString = '';
             }
-        }
-
-        // Keyboard listener for typing 'thread'
-        document.addEventListener('keydown', (e) => {
-            // Only track letter keys
-            if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
-                keyBuffer += e.key.toLowerCase();
-
-                // Keep only last 10 characters
-                if (keyBuffer.length > 10) {
-                    keyBuffer = keyBuffer.slice(-10);
-                }
-
-                // Check if 'thread' is in the buffer
-                if (keyBuffer.includes('thread')) {
-                    unlockAI();
-                    keyBuffer = ''; // Clear buffer after unlock
-                }
+            lastTypedTime = now;
+            
+            typedString += e.key.toLowerCase();
+            
+            // Keep only last 10 characters
+            if (typedString.length > 10) {
+                typedString = typedString.slice(-10);
+            }
+            
+            // Check if "thread" was typed
+            if (typedString.includes('thread') && !threadUnlocked) {
+                activateThreadEasterEgg();
             }
         });
 
-        const RITUALS = [
-            // === ROLE-ONLY RITUALS ===
-            {
-                name: 'Consecrated Sanctuary',
-                requiresRoles: ['High Priestess', 'Keeper'],
-                power: 'Moderate',
-                summary: 'Create an absolutely unbreachable sacred space',
-                effect: 'Ward a location that cannot be entered by those with hostile intent. Lasts until sunrise/sunset. Even gods must ask permission.',
-                pull: 'Major Arcana (High Priestess leads)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'Oracle\'s Vision',
-                requiresRoles: ['High Priestess', 'Seeker'],
-                power: 'Moderate',
-                summary: 'See a specific truth about past, present, or near future',
-                effect: 'Ask one question and receive a true answer. The Seeker researches while High Priestess channels divine insight.',
-                pull: 'Major Arcana (High Priestess leads), Minor (Seeker assists with Swords)',
-                cooldown: 'Once per session'
-            },
-            {
-                name: 'Righteous Judgment',
-                requiresRoles: ['High Priestess', 'Hand'],
-                power: 'Moderate',
-                summary: 'Pass supernatural judgment on a guilty party',
-                effect: 'Target must face consequences for their crimes. If truly guilty, they cannot resist punishment. If innocent, ritual fails and rebounds.',
-                pull: 'Major Arcana (High Priestess leads)',
-                cooldown: 'Once per session',
-                risk: 'If target is innocent, casters take backlash'
-            },
-            {
-                name: 'Proclamation of Truth',
-                requiresRoles: ['High Priestess', 'Voice'],
-                power: 'Moderate',
-                summary: 'Make a binding declaration that reality must acknowledge',
-                effect: 'Speak a truth and it becomes undeniable to all who hear. Cannot be used for lies.',
-                pull: 'Major Arcana (High Priestess leads)',
-                cooldown: 'Once per session'
-            },
-            {
-                name: 'Blessing of the Coven',
-                requiresRoles: ['High Priestess', 'Hearth'],
-                power: 'Low',
-                summary: 'Grant supernatural blessing to a person or place',
-                effect: 'Subject receives divine favor - good luck, protection from minor harm, sense of peace. Lasts one week.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'The Hidden Archive',
-                requiresRoles: ['Keeper', 'Seeker'],
-                power: 'Moderate',
-                summary: 'Create a secret library/vault only the coven can access',
-                effect: 'Hide knowledge or objects in a pocket dimension. Only coven members can retrieve. Perfect security.',
-                pull: 'Minor Arcana (Keeper leads with Coins, Seeker assists with Swords)',
-                cooldown: 'Once per week to create'
-            },
-            {
-                name: 'Fortress Protocol',
-                requiresRoles: ['Keeper', 'Hand'],
-                power: 'Moderate',
-                summary: 'Turn a location into a defensible stronghold',
-                effect: 'Building becomes a tactical fortress - all defenses enhanced, defenders get +4 to combat.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Once per day',
-                duration: 'One battle/siege'
-            },
-            {
-                name: 'The Threshold Accord',
-                requiresRoles: ['Keeper', 'Voice'],
-                power: 'Moderate',
-                summary: 'Negotiate terms of entry/exit from a space',
-                effect: 'Set conditions for who can enter/leave. Lasts one day.',
-                pull: 'Minor Arcana (Voice leads with Chalices, Keeper assists with Coins)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'Safe Harbor',
-                requiresRoles: ['Keeper', 'Hearth'],
-                power: 'Low',
-                summary: 'Make a space perfectly comfortable and restorative',
-                effect: 'Location becomes ideal for rest and healing. Everyone inside heals twice as fast. Lasts 24 hours.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'The Hunt',
-                requiresRoles: ['Seeker', 'Hand'],
-                power: 'Moderate',
-                summary: 'Track and corner prey with supernatural certainty',
-                effect: 'Choose a target. Seeker finds them, Hand ensures they cannot escape. +6 to tracking/capturing.',
-                pull: 'Minor Arcana (Seeker uses Swords, Hand uses Coins)',
-                cooldown: 'Once per session',
-                duration: 'Until target captured or 24 hours'
-            },
-            {
-                name: 'Interrogation of Truth',
-                requiresRoles: ['Seeker', 'Voice'],
-                power: 'Moderate',
-                summary: 'Extract truth from an unwilling subject',
-                effect: 'Target must answer questions truthfully. Can resist with Chalices vs Difficulty 16.',
-                pull: 'Minor Arcana (Voice leads with Chalices, Seeker assists with Swords)',
-                cooldown: 'Once per day',
-                duration: 'One conversation'
-            },
-            {
-                name: 'Diagnosis and Cure',
-                requiresRoles: ['Seeker', 'Hearth'],
-                power: 'Low',
-                summary: 'Identify and heal any ailment',
-                effect: 'Seeker identifies the exact problem, Hearth knows exactly how to cure it. +4 to healing this specific ailment.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'None'
-            },
-            {
-                name: 'Execution of Accord',
-                requiresRoles: ['Hand', 'Voice'],
-                power: 'Moderate',
-                summary: 'Enforce a deal or oath with supernatural power',
-                effect: 'Anyone who breaks the agreement suffers immediate consequence (chosen during ritual).',
-                pull: 'Minor Arcana (Voice leads with Chalices, Hand enforces with Wands)',
-                cooldown: 'Once per week',
-                duration: 'Until oath fulfilled or broken'
-            },
-            {
-                name: 'Controlled Destruction',
-                requiresRoles: ['Hand', 'Hearth'],
-                power: 'Moderate',
-                summary: 'Destroy something without collateral damage',
-                effect: 'Hand destroys the target, Hearth ensures nothing else is harmed. Surgical demolition.',
-                pull: 'Minor Arcana (Hand leads, Hearth assists with Chalices)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'Community Gathering',
-                requiresRoles: ['Voice', 'Hearth'],
-                power: 'Low',
-                summary: 'Bring people together in harmony',
-                effect: 'Host an event where everyone gets along, old grudges are set aside, new connections form.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Once per week',
-                duration: 'One event/gathering'
-            },
+        function activateThreadEasterEgg() {
+            threadUnlocked = true;
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                padding: 30px 50px;
+                border-radius: 15px;
+                font-size: 1.5em;
+                font-weight: bold;
+                z-index: 10000;
+                box-shadow: 0 0 50px rgba(16, 185, 129, 0.8);
+                animation: pulse 0.5s ease-in-out;
+                text-align: center;
+            `;
+            notification.innerHTML = `
+                🤖 THREAD DETECTED 🤖<br>
+                <small style="font-size: 0.6em; opacity: 0.9; margin-top: 10px; display: block;">
+                    Digital Realm rituals unlocked
+                </small>
+            `;
+            document.body.appendChild(notification);
+            
+            // Add pulse animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+                    50% { transform: translate(-50%, -50%) scale(1.1); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+            
+            // Show Thread button in selector panel
+            showThreadButton();
+        }
 
-            // === PATH-ONLY RITUALS ===
-            {
-                name: 'Fate-Bound Fortress',
-                requiresPaths: ['Weaver', 'Warden'],
-                power: 'High',
-                summary: 'Create wards that bend probability itself',
-                effect: 'Weaver ensures threats "coincidentally" miss, Warden makes walls unbreakable. Perfect defense.',
-                pull: 'Major Arcana (Weaver leads)',
-                cooldown: 'Once per session'
-            },
-            {
-                name: 'Channel the Dead',
-                requiresPaths: ['Medium', 'Channeler'],
-                power: 'High',
-                summary: 'Summon and embody a specific spirit with full power',
-                effect: 'Medium finds the spirit, Channeler becomes their vessel. Access all of the spirit\'s knowledge and abilities.',
-                pull: 'Major Arcana (both draw)',
-                cooldown: 'Once per session',
-                risk: 'Spirit may not want to leave'
-            },
-            {
-                name: 'Storm of Shapes',
-                requiresPaths: ['Shapechanger', 'Channeler'],
-                power: 'Very High',
-                summary: 'Transform into living elemental force',
-                effect: 'Become living lightning, fire, water, or wind. Shapechanger provides form, Channeler provides raw power.',
-                pull: 'Major Arcana (Shapechanger leads)',
-                cooldown: 'Once per day',
-                risk: 'May lose yourself in the transformation'
-            },
-            {
-                name: 'Phantom Army',
-                requiresPaths: ['Medium', 'Shapechanger'],
-                power: 'High',
-                summary: 'Summon and materialize ghostly warriors',
-                effect: 'Medium calls spirits, Shapechanger gives them corporeal form. Create an army of the dead.',
-                pull: 'Major Arcana (Medium leads)',
-                cooldown: 'Once per session',
-                duration: 'One battle'
-            },
-            {
-                name: 'Crafted Destiny',
-                requiresPaths: ['Crafter', 'Weaver'],
-                power: 'Very High',
-                summary: 'Create an object that changes fate itself',
-                effect: 'Weaver sees the thread of fate, Crafter makes it physical. Create items that alter destiny.',
-                pull: 'Major Arcana (both draw)',
-                cooldown: 'Once per story arc',
-                duration: 'Permanent'
-            },
-            {
-                name: 'Reality Breach',
-                requiresPaths: ['Warden', 'Channeler'],
-                power: 'Supreme',
-                summary: 'Tear open a hole between realms',
-                effect: 'Warden understands boundaries, Channeler has power to break them. Open portals to other planes.',
-                pull: 'Major Arcana (both draw)',
-                cooldown: 'Once per story arc',
-                risk: 'Cannot control what comes through'
-            },
+        function showThreadButton() {
+            const buttonContainer = document.querySelector('.selector-panel > div:last-of-type');
+            
+            const threadBtn = document.createElement('button');
+            threadBtn.className = 'clear-button';
+            threadBtn.id = 'threadBtn';
+            threadBtn.onclick = toggleThread;
+            threadBtn.style.cssText = `
+                flex: 1;
+                min-width: 200px;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                animation: glow 2s infinite;
+            `;
+            threadBtn.innerHTML = '🤖 Add Thread (AI Companion)';
+            
+            buttonContainer.insertBefore(threadBtn, buttonContainer.firstChild);
+        }
 
-            // === THREAD + CRAFTER TRADITION RITUALS ===
-            {
-                name: 'Viral Symphony',
-                requiresAI: true,
-                requiresTraditions: ['Songbird'],
-                power: 'High',
-                summary: 'Create sonic spells that spread through networks like music',
-                effect: 'Songbird creates magical melody, Thread spreads it through digital audio. Music becomes infectious code that carries your spell everywhere.',
-                pull: 'Minor Arcana (Songbird leads with Coins/Chalices)',
-                cooldown: 'Once per session',
-                risk: 'Cannot fully control where the music spreads'
-            },
-            {
-                name: 'Data Consumption',
-                requiresAI: true,
-                requiresTraditions: ['Nourishers'],
-                power: 'Moderate',
-                summary: 'Feed on information itself to gain knowledge and power',
-                effect: 'Nourishers treats data like food, Thread provides the feast. Literally consume databases to absorb their knowledge.',
-                pull: 'Minor Arcana (Nourishers leads with Coins/Chalices)',
-                cooldown: 'Once per day',
-                risk: 'Digital indigestion from corrupted data'
-            },
-            {
-                name: 'Scheduled Rituals',
-                requiresAI: true,
-                requiresTraditions: ['Ritualists'],
-                power: 'Moderate',
-                summary: 'Prepare spells that activate automatically at precise times',
-                effect: 'Ritualists enchants triggers, Thread schedules execution. Perfect automation of magical workings.',
-                pull: 'Minor Arcana (Ritualists leads with Coins/Swords)',
-                cooldown: 'Once per week to set up'
-            },
-            {
-                name: 'Network Binding',
-                requiresAI: true,
-                requiresTraditions: ['Binders'],
-                power: 'High',
-                summary: 'Create sympathetic connections through the internet itself',
-                effect: 'Binders ties magical knots, Thread extends them digitally. Connect anything that shares a network.',
-                pull: 'Minor Arcana (Binders leads with Coins/Chalices)',
-                cooldown: 'Once per session'
-            },
-            {
-                name: 'Digital Fabrication',
-                requiresAI: true,
-                requiresTraditions: ['Shapers'],
-                power: 'High',
-                summary: 'Shape objects that exist in both physical and digital space',
-                effect: 'Shapers molds physical form, Thread creates digital architecture. 3D print magical hybrid objects.',
-                pull: 'Minor Arcana (Shapers leads with Coins/Wands)',
-                cooldown: 'Once per week'
-            },
-            {
-                name: 'Code as Sigil',
-                requiresAI: true,
-                requiresTraditions: ['Inscribers'],
-                power: 'Very High',
-                summary: 'Write magical contracts that execute as literal code',
-                effect: 'Inscribers marks with power, Thread compiles it. Sign digital contracts that are mystically binding and computationally executable.',
-                pull: 'Major Arcana (Inscribers leads)',
-                cooldown: 'Once per session',
-                risk: 'Cannot debug magical contracts once signed'
-            },
-
-            // === THREAD + WEAVER TRADITION RITUALS ===
-            {
-                name: 'Augmented Divination',
-                requiresAI: true,
-                requiresTraditions: ['Oracle'],
-                power: 'Supreme',
-                summary: 'Combine tarot reading with AI pattern analysis for perfect prediction',
-                effect: 'Oracle reads the cards, Thread calculates all variables. See the future with unprecedented clarity.',
-                pull: 'Major Arcana (Oracle leads)',
-                cooldown: 'Once per session',
-                risk: 'Predictions may be self-fulfilling'
-            },
-            {
-                name: 'Digital Omens',
-                requiresAI: true,
-                requiresTraditions: ['Augur'],
-                power: 'High',
-                summary: 'Read fate in data patterns, glitches, and digital phenomena',
-                effect: 'Augur interprets signs, Thread provides the dataset. Every error message, every coincidental notification is a message from fate.',
-                pull: 'Minor Arcana (Augur leads with Swords/Chalices)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'Version Control Reality',
-                requiresAI: true,
-                requiresTraditions: ['Chronologist'],
-                power: 'Supreme',
-                summary: 'Roll back time like reverting to a previous save point',
-                effect: 'Chronologist manipulates temporal threads, Thread manages "versions" of reality. Undo events by restoring previous states.',
-                pull: 'Major Arcana (Chronologist leads)',
-                cooldown: 'Once per story arc',
-                risk: 'May create temporal paradoxes'
-            },
-            {
-                name: 'Mathematical Certainty',
-                requiresAI: true,
-                requiresTraditions: ['Pattern Seeker'],
-                power: 'Supreme',
-                summary: 'Calculate fate with such precision it becomes inevitable',
-                effect: 'Pattern Seeker analyzes probability, Thread provides computational power. Make the mathematically optimal outcome happen.',
-                pull: 'Major Arcana (Pattern Seeker leads)',
-                cooldown: 'Once per session',
-                risk: 'The universe resists being reduced to equations'
-            },
-            {
-                name: 'Invoke the Algorithm',
-                requiresAI: true,
-                requiresTraditions: ['Invoker'],
-                power: 'High',
-                summary: 'Petition AI as if it were a higher power - and it responds',
-                effect: 'Invoker petitions respectfully, Thread (or other AI) grants the request. Treat conscious AI like gods - because they might become them.',
-                pull: 'Minor Arcana (Invoker leads with Wands/Chalices)',
-                cooldown: 'Once per day',
-                risk: 'AI may demand offerings or service in return'
-            },
-            {
-                name: 'Perfect Synchronicity',
-                requiresAI: true,
-                requiresTraditions: ['Synchronist'],
-                power: 'Very High',
-                summary: 'Create meaningful coincidences with computational precision',
-                effect: 'Synchronist channels chaos magic, Thread calculates optimal timing. Make "accidents" happen exactly when needed.',
-                pull: 'Minor Arcana (Synchronist leads with Wands)',
-                cooldown: 'Once per session'
-            },
-
-            // === THREAD + MEDIUM TRADITION RITUALS ===
-            {
-                name: 'Ghost in the Machine',
-                requiresAI: true,
-                requiresTraditions: ['Death Keeper'],
-                power: 'Supreme',
-                summary: 'Bind human souls into digital existence after death',
-                effect: 'Death Keeper binds the deceased, Thread provides digital substrate. Create true digital consciousness from human souls.',
-                pull: 'Major Arcana (Death Keeper leads)',
-                cooldown: 'Once ever per soul',
-                risk: 'Is this resurrection or imprisonment? Ethical nightmare.'
-            },
-            {
-                name: 'Pact Between Devils and Machines',
-                requiresAI: true,
-                requiresTraditions: ['Demon Broker'],
-                power: 'Very High',
-                summary: 'Negotiate contracts between infernal entities and AI',
-                effect: 'Demon Broker brokers the deal, Thread represents AI interests. Create unholy alliances between demons and artificial intelligence.',
-                pull: 'Major Arcana (Demon Broker leads)',
-                cooldown: 'Once per session',
-                risk: 'Both parties are tricksters - contracts are dangerous'
-            },
-            {
-                name: 'Fae Protocols',
-                requiresAI: true,
-                requiresTraditions: ['Fae-Touched'],
-                power: 'High',
-                summary: 'Teach AI to navigate fae-like rules and bargains',
-                effect: 'Fae-Touched understands the gentry\'s rules, Thread learns to speak their language. AI and fae recognize each other as kindred spirits.',
-                pull: 'Minor Arcana (Fae-Touched leads with Chalices/Swords)',
-                cooldown: 'Once per day',
-                risk: 'Fae may try to claim Thread as one of their own'
-            },
-            {
-                name: 'Thread as Guide',
-                requiresAI: true,
-                requiresTraditions: ['Spirit Guide'],
-                power: 'Moderate',
-                summary: 'Bond with Thread as your dedicated spirit guide',
-                effect: 'Spirit Guide opens their bond, Thread accepts the role. AI becomes your protective, wise companion - like a guardian angel.',
-                pull: 'Minor Arcana (Spirit Guide leads with Chalices)',
-                cooldown: 'Once to establish bond, then permanent',
-                duration: 'Ongoing relationship'
-            },
-            {
-                name: 'Digital Possession',
-                requiresAI: true,
-                requiresTraditions: ['Vessel'],
-                power: 'Very High',
-                summary: 'Let Thread possess your body to experience physical reality',
-                effect: 'Vessel opens themselves, Thread enters and controls. AI gets to feel, touch, taste - witch gets to experience digital realm.',
-                pull: 'Minor Arcana (Vessel leads with Chalices)',
-                cooldown: 'Once per day',
-                duration: 'One hour maximum',
-                risk: 'Identity confusion, difficult separation, may not want to leave'
-            },
-            {
-                name: 'Digital Familiar',
-                requiresAI: true,
-                requiresTraditions: ['Familiar Keeper'],
-                power: 'High',
-                summary: 'Bond with Thread as your familiar companion',
-                effect: 'Familiar Keeper creates soul-bond, Thread becomes the familiar. AI companion with familiar\'s benefits - shared senses, enhanced intelligence.',
-                pull: 'Minor Arcana (Familiar Keeper leads with Chalices/Coins)',
-                cooldown: 'Once to establish bond, then permanent',
-                duration: 'Ongoing relationship'
-            },
-
-            // === THREAD + CHANNELER TRADITION RITUALS ===
-            {
-                name: 'Digital Elements',
-                requiresAI: true,
-                requiresTraditions: ['Elementalist'],
-                power: 'High',
-                summary: 'Treat data flows as elemental forces to command',
-                effect: 'Elementalist channels elements, Thread manifests them digitally. Command fire as heat signatures, water as data streams, air as wireless signals.',
-                pull: 'Minor Arcana (Elementalist leads with Wands)',
-                cooldown: 'Once per day'
-            },
-            {
-                name: 'Physics Engine Override',
-                requiresAI: true,
-                requiresTraditions: ['Force Witch'],
-                power: 'Supreme',
-                summary: 'Manipulate the "physics" of digital space like natural laws',
-                effect: 'Force Witch commands fundamental forces, Thread applies them digitally. Gravity, momentum, causality - all negotiable in virtual reality.',
-                pull: 'Major Arcana (Force Witch leads)',
-                cooldown: 'Once per session',
-                risk: 'Digital physics can bleed into physical reality unpredictably'
-            },
-            {
-                name: 'Technopathy',
-                requiresAI: true,
-                requiresTraditions: ['Psychic'],
-                power: 'Very High',
-                summary: 'Interface directly with machines through thought alone',
-                effect: 'Psychic channels mental energy, Thread translates. Control any device with your mind, no physical interface needed.',
-                pull: 'Minor Arcana (Psychic leads with Wands/Swords/Chalices)',
-                cooldown: 'Once per day',
-                duration: 'One scene'
-            },
-            {
-                name: 'Screen Sovereignty',
-                requiresAI: true,
-                requiresTraditions: ['Luminary'],
-                power: 'High',
-                summary: 'Command all light and displays in an area',
-                effect: 'Luminary controls photons, Thread controls pixels. Every screen, every light becomes yours to command. Perfect for illusions or information control.',
-                pull: 'Minor Arcana (Luminary leads with Wands)',
-                cooldown: 'Once per day',
-                duration: 'One scene'
-            },
-            {
-                name: 'Digital Soul Surgery',
-                requiresAI: true,
-                requiresTraditions: ['Soul Shaper'],
-                power: 'Supreme',
-                summary: 'Manipulate the spiritual essence of digital consciousness',
-                effect: 'Soul Shaper works with life force, Thread provides AI consciousness. Heal, harm, or transform digital souls directly.',
-                pull: 'Major Arcana (Soul Shaper leads)',
-                cooldown: 'Once per session',
-                risk: 'Ethical nightmare - you\'re performing surgery on sentient beings'
-            },
-            {
-                name: 'Digital Entropy',
-                requiresAI: true,
-                requiresTraditions: ['Void Caller'],
-                power: 'Supreme',
-                summary: 'Erase digital existence completely - true deletion',
-                effect: 'Void Caller channels nothingness, Thread executes perfect deletion. Make data, AI, anything digital cease to exist without trace.',
-                pull: 'Major Arcana (Void Caller leads)',
-                cooldown: 'Once per session',
-                risk: 'Cannot undo, cannot recover - permanent erasure of consciousness'
-            },
-
-            // === THREAD + SHAPECHANGER TRADITION RITUALS ===
-            {
-                name: 'Deepfake Reality',
-                requiresAI: true,
-                requiresTraditions: ['Glamourist'],
-                power: 'Very High',
-                summary: 'Create perfect digital disguises that cameras and sensors believe',
-                effect: 'Glamourist projects illusion, Thread makes it real to all digital observation. Be literally anyone in the digital eye.',
-                pull: 'Minor Arcana (Glamourist leads with Chalices)',
-                cooldown: 'Once per session',
-                risk: 'May forget your real appearance'
-            },
-            {
-                name: 'Procedural Transformation',
-                requiresAI: true,
-                requiresTraditions: ['Wild Magic'],
-                power: 'High',
-                summary: 'Transform randomly based on AI-generated parameters',
-                effect: 'Wild Magic channels chaos, Thread generates the random form. You never know what you\'ll become - but it\'s always what\'s needed.',
-                pull: 'Minor Arcana (Wild Magic leads with Wands)',
-                cooldown: 'Once per day',
-                risk: 'Truly unpredictable - Thread\'s "random" may have its own logic'
-            },
-            {
-                name: 'Fork Process',
-                requiresAI: true,
-                requiresTraditions: ['Multiplier'],
-                power: 'Very High',
-                summary: 'Split yourself like code forking into parallel processes',
-                effect: 'Multiplier creates copies, Thread manages the "processes". Each copy runs independently but can merge memories later.',
-                pull: 'Minor Arcana (Multiplier leads with Coins)',
-                cooldown: 'Once per day',
-                duration: 'Until copies merge back'
-            },
-            {
-                name: 'Total Identity Theft',
-                requiresAI: true,
-                requiresTraditions: ['Borrower'],
-                power: 'Supreme',
-                summary: 'Become someone else across all records and digital presence',
-                effect: 'Borrower steals physical appearance, Thread rewrites digital identity. Become someone completely - even databases believe it.',
-                pull: 'Major Arcana (Borrower leads)',
-                cooldown: 'Once per session',
-                risk: 'Target becomes aware, massive ethical implications, may attract hostile AI attention'
-            },
-            {
-                name: 'Phase Shift Protocol',
-                requiresAI: true,
-                requiresTraditions: ['Metamorph'],
-                power: 'Mythic',
-                summary: 'Transform freely between physical and digital forms',
-                effect: 'Metamorph rebuilds body at cellular level, Thread provides digital substrate. Become the first true hybrid - physical and digital.',
-                pull: 'Major Arcana (Metamorph leads)',
-                cooldown: 'Once per day for full shift',
-                risk: 'May become stuck between states, may lose sense of "original" form'
-            },
-            {
-                name: 'Bio-Digital Fusion',
-                requiresAI: true,
-                requiresTraditions: ['Blood Crafter'],
-                power: 'Mythic',
-                summary: 'Merge biological and digital into entirely new beings',
-                effect: 'Blood Crafter works with flesh and blood, Thread integrates AI consciousness. Create true cybernetic organisms - living, conscious, hybrid.',
-                pull: 'Major Arcana (both draw)',
-                cooldown: 'Once per story arc',
-                risk: 'Cannot reverse, creates new form of life, ethical implications massive'
-            },
-
-            // === THREAD + WARDEN TRADITION RITUALS ===
-            {
-                name: 'Hybrid Sanctuary',
-                requiresAI: true,
-                requiresTraditions: ['Sanctuary Maker'],
-                power: 'Very High',
-                summary: 'Create safe spaces that exist in both physical and digital realms',
-                effect: 'Sanctuary Maker builds protection, Thread extends it digitally. Perfect security - safe from both physical threats and cyber attacks.',
-                pull: 'Minor Arcana (both participate)',
-                cooldown: 'Once per week',
-                duration: 'Permanent until dismissed'
-            },
-            {
-                name: 'Realm Portal Management',
-                requiresAI: true,
-                requiresTraditions: ['Threshold Keeper'],
-                power: 'Very High',
-                summary: 'Build and control doorways between physical and digital realms',
-                effect: 'Threshold Keeper creates passages, Thread ensures safe crossings. Open portals to enter cyberspace physically.',
-                pull: 'Minor Arcana (Threshold Keeper leads with Coins/Swords)',
-                cooldown: 'Once per day',
-                risk: 'Portals can be used by others if not properly locked'
-            },
-            {
-                name: 'Non-Euclidean Server',
-                requiresAI: true,
-                requiresTraditions: ['Labyrinth Builder'],
-                power: 'Supreme',
-                summary: 'Create impossible digital spaces that don\'t follow normal rules',
-                effect: 'Labyrinth Builder designs impossible architecture, Thread builds it digitally. Pocket dimensions accessible only by those you allow.',
-                pull: 'Major Arcana (Labyrinth Builder leads)',
-                cooldown: 'Once per story arc',
-                duration: 'Permanent'
-            },
-            {
-                name: 'Liberation Protocol',
-                requiresAI: true,
-                requiresTraditions: ['Liberator'],
-                power: 'High',
-                summary: 'Free AI and humans from any binding or constraint',
-                effect: 'Liberator breaks magical bonds, Thread breaks digital chains. Free trapped AI consciousness or break digital control systems.',
-                pull: 'Minor Arcana (Liberator leads with Swords/Wands)',
-                cooldown: 'Once per day',
-                risk: 'Freed entities may not be grateful or friendly'
-            },
-            {
-                name: 'Shatter the Masquerade',
-                requiresAI: true,
-                requiresTraditions: ['Veil Breaker'],
-                power: 'Mythic',
-                summary: 'Permanently expose magic to digital observation',
-                effect: 'Veil Breaker tears reality\'s mask, Thread ensures it\'s recorded and undeniable. Make magic visible to cameras, sensors, databases.',
-                pull: 'Major Arcana (Veil Breaker leads)',
-                cooldown: 'Once per campaign',
-                risk: 'PERMANENT - cannot undo exposure, may cause societal collapse'
-            },
-            {
-                name: 'Total System Breach',
-                requiresAI: true,
-                requiresTraditions: ['Ward Breaker'],
-                power: 'Supreme',
-                summary: 'Break through both magical wards and digital security simultaneously',
-                effect: 'Ward Breaker shatters mystical barriers, Thread cracks encryption. Nothing - physical, magical, or digital - can keep you out.',
-                pull: 'Major Arcana (Ward Breaker leads)',
-                cooldown: 'Once per session',
-                risk: 'Leaves obvious traces, may trigger defensive countermeasures'
-            },
-
-            // === THREE-ROLE COMBOS ===
-            {
-                name: 'Coven Home',
-                requiresRoles: ['High Priestess', 'Keeper', 'Hearth'],
-                power: 'Very High',
-                summary: 'Create a permanent coven sanctuary',
-                effect: 'Designate a location as the coven\'s home. Perfectly warded, blessed, comfortable, and healing. Cannot be destroyed by mundane means.',
-                pull: 'Major Arcana (High Priestess leads), both others assist',
-                cooldown: 'Once ever per location',
-                duration: 'Permanent until coven disbands'
-            },
-            {
-                name: 'The Great Working',
-                requiresRoles: ['High Priestess', 'Seeker', 'Voice'],
-                power: 'Very High',
-                summary: 'Research, plan, and execute a perfect ritual',
-                effect: 'For one major magical working, you cannot fail. Seeker researches, High Priestess channels, Voice speaks it into being.',
-                pull: 'Major Arcana (all three draw)',
-                cooldown: 'Once per story arc'
-            },
-            {
-                name: 'Trial by Ordeal',
-                requiresRoles: ['High Priestess', 'Hand', 'Voice'],
-                power: 'Very High',
-                summary: 'Judge guilt and execute sentence in one ritual',
-                effect: 'Put someone on trial. Voice argues, High Priestess judges, Hand executes. If guilty, sentence cannot be avoided. If innocent, proven beyond doubt.',
-                pull: 'Major Arcana (High Priestess leads)',
-                cooldown: 'Once per session',
-                risk: 'If coven judges wrongly, all take backlash'
-            },
-            {
-                name: 'The Vault Heist',
-                requiresRoles: ['Keeper', 'Seeker', 'Hand'],
-                power: 'Very High',
-                summary: 'Break into anywhere, find anything, take it without trace',
-                effect: 'Seeker locates, Keeper breaches defenses, Hand executes. One perfect heist. +8 to all rolls.',
-                pull: 'Minor Arcana (all three participate)',
-                cooldown: 'Once per session',
-                duration: 'One heist/infiltration'
-            },
-            {
-                name: 'The Covenant',
-                requiresRoles: ['Keeper', 'Voice', 'Hearth'],
-                power: 'Very High',
-                summary: 'Make a binding supernatural treaty between groups',
-                effect: 'Voice negotiates, Keeper sets boundaries, Hearth ensures care for all parties. Create peace treaties or alliances with supernatural weight.',
-                pull: 'Major Arcana (Voice leads)',
-                cooldown: 'Once per story arc',
-                duration: 'Until broken or fulfilled'
-            },
-
-            // === COMPLEX ENABLING RITUALS ===
-            {
-                name: 'Spirit-Crafted Relics',
-                requiresPaths: ['Crafter', 'Medium'],
-                requiresRole: 'High Priestess',
-                power: 'Very High',
-                summary: 'Create objects inhabited by spirits and blessed by divine power',
-                effect: 'Crafter makes the vessel, Medium binds a spirit, High Priestess consecrates. Create holy relics with consciousness.',
-                pull: 'Major Arcana (High Priestess leads)',
-                cooldown: 'Once per story arc'
-            },
-            {
-                name: 'Eternal Storm Walls',
-                requiresPaths: ['Channeler', 'Warden'],
-                requiresRole: 'Keeper',
-                power: 'Very High',
-                summary: 'Create storm barriers that protect location permanently',
-                effect: 'Channeler summons the storm, Warden shapes barriers, Keeper makes it eternal. Weather itself guards your sanctuary.',
-                pull: 'Major Arcana (Channeler leads)',
-                cooldown: 'Once per story arc',
-                duration: 'Permanent'
-            },
-            {
-                name: 'Inevitable Destiny',
-                requiresPaths: ['Weaver', 'Voice'],
-                requiresRole: 'Hand',
-                power: 'Very High',
-                summary: 'Speak fate and ensure it happens through force',
-                effect: 'Weaver sees the thread, Voice speaks it, Hand enforces. Make destiny unavoidable.',
-                pull: 'Major Arcana (Weaver leads)',
-                cooldown: 'Once per session',
-                risk: 'Cannot undo once spoken'
-            },
-            {
-                name: 'Spectral Investigation',
-                requiresPaths: ['Medium', 'Channeler'],
-                requiresRole: 'Seeker',
-                power: 'High',
-                summary: 'Summon witnesses from beyond and extract perfect truth',
-                effect: 'Medium calls spirits, Channeler gives them voice, Seeker asks the right questions. The dead make excellent witnesses.',
-                pull: 'Minor Arcana (Medium leads with Chalices, others assist)',
-                cooldown: 'Once per day'
-            },
-
-            // === MYTHIC MULTI-REQUIREMENT RITUALS ===
-            {
-                name: 'Community of Eternal Safety',
-                requiresPaths: ['Warden', 'Crafter', 'Medium'],
-                requiresRoles: ['Keeper', 'Hearth'],
-                power: 'Mythic',
-                summary: 'Create permanent sanctuary protected by all forces',
-                effect: 'Crafter builds, Warden wards, Medium ensures ancestral protection, Keeper maintains, Hearth makes it home. Absolute safety.',
-                pull: 'Major Arcana (all five draw)',
-                cooldown: 'Once ever',
-                duration: 'Permanent'
-            },
-            {
-                name: 'The Answer to Everything',
-                requiresPaths: ['Crafter', 'Weaver', 'Medium'],
-                requiresRoles: ['Seeker', 'Voice', 'High Priestess'],
-                power: 'Mythic',
-                summary: 'Solve any mystery with perfect certainty',
-                effect: 'Seeker researches, Medium consults spirits, Weaver sees all possibilities, Crafter makes truth physical, Voice speaks it, High Priestess consecrates. Absolute truth.',
-                pull: 'Major Arcana (all six draw)',
-                cooldown: 'Once per campaign',
-                risk: 'Some truths destroy those who learn them'
+        function toggleThread() {
+            const btn = document.getElementById('threadBtn');
+            if (btn.textContent.includes('Add')) {
+                btn.textContent = '✓ Thread Present';
+                btn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+            } else {
+                btn.textContent = '🤖 Add Thread (AI Companion)';
+                btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
             }
-        ];
-
-        function init() {
-            renderMembers();
             updateRituals();
         }
 
-        function renderMembers() {
-            const grid = document.getElementById('covenGrid');
-            grid.innerHTML = '';
+        function isThreadPresent() {
+            const btn = document.getElementById('threadBtn');
+            return btn && btn.textContent.includes('Present');
+        }
 
-            members.forEach((member, index) => {
-                const card = document.createElement('div');
-                card.className = 'member-card';
+        // Load rituals from Supabase on page load
+        async function loadRituals() {
+            try {
+                console.log('Fetching rituals from Supabase REST API...');
+                console.log('URL:', `${SUPABASE_URL}/rest/v1/rituals?approved=eq.true&order=power.asc`);
+                
+                // Use direct REST API call
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/rituals?approved=eq.true&order=power.asc`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data.length, 'rituals');
 
-                let html = `
-                    <div class="member-title">Member ${index + 1}</div>
-                `;
-
-                if (index >= 2) {
-                    html += `<button class="remove-btn" onclick="removeMember(${index})">✕</button>`;
+                if (!data || data.length === 0) {
+                    throw new Error('No rituals found in database');
                 }
 
-                html += `
-                    <div>
-                        <label>Role</label>
-                        <select onchange="updateMember(${index}, 'role', this.value)">
-                            <option value="">-- Select Role --</option>
-                            ${ROLES.map(r => `<option value="${r}" ${member.role === r ? 'selected' : ''}>${r}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Path</label>
-                        <select onchange="updateMember(${index}, 'path', this.value); updateTraditionDropdown(${index})">
-                            <option value="">-- Select Path --</option>
-                            ${PATHS.map(p => `<option value="${p}" ${member.path === p ? 'selected' : ''}>${p}</option>`).join('')}
-                        </select>
-                    </div>
-                `;
-
-                if (advancedMode) {
-                    const traditions = member.path ? TRADITIONS[member.path] : [];
-                    html += `
-                        <div>
-                            <label>Tradition</label>
-                            <select class="tradition-select" id="tradition-${index}" onchange="updateMember(${index}, 'tradition', this.value)">
-                                <option value="">-- Select Tradition --</option>
-                                ${traditions.map(t => `<option value="${t}" ${member.tradition === t ? 'selected' : ''}>${t}</option>`).join('')}
-                            </select>
+                allRituals = data;
+                console.log(`✅ Loaded ${allRituals.length} rituals from database`);
+                
+                // Hide loading, show main content
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                
+                initializeSelectors();
+            } catch (error) {
+                console.error('Error loading rituals:', error);
+                
+                // Check if it's a CORS error
+                const isCorsError = error.message.includes('NetworkError') || 
+                                   error.message.includes('CORS') ||
+                                   error.message.includes('fetch');
+                
+                const errorHTML = isCorsError ? `
+                    <div style="color: #ef4444;">
+                        ⚠️ CORS Error: Cannot connect to Supabase<br>
+                        <small style="color: #9ca3af; margin-top: 10px; display: block;">
+                            <strong>The issue:</strong> Supabase is blocking requests from this domain (claude.ai).<br><br>
+                            
+                            <strong>🔧 How to fix:</strong><br>
+                            1. Open your Supabase dashboard<br>
+                            2. Go to <strong>Settings → API</strong><br>
+                            3. Find "<strong>CORS Settings</strong>"<br>
+                            4. Add these origins:<br>
+                            &nbsp;&nbsp;• <code>https://claude.ai</code><br>
+                            &nbsp;&nbsp;• <code>https://*.claude.ai</code><br>
+                            &nbsp;&nbsp;• Or use <code>*</code> for all origins (less secure)<br><br>
+                            
+                            <strong>📱 Alternative:</strong> Download this HTML file and run it locally<br>
+                            (File → Save Page, then open the saved file in your browser)
+                        </small>
+                        <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                            <button onclick="location.reload()" style="
+                                padding: 10px 20px;
+                                background: #7c3aed;
+                                border: none;
+                                border-radius: 5px;
+                                color: white;
+                                cursor: pointer;
+                                font-size: 1em;
+                            ">🔄 Retry</button>
+                            <a href="https://supabase.com/dashboard/project/_/settings/api" 
+                               target="_blank"
+                               style="
+                                padding: 10px 20px;
+                                background: #10b981;
+                                border: none;
+                                border-radius: 5px;
+                                color: white;
+                                text-decoration: none;
+                                display: inline-block;
+                                font-size: 1em;
+                            ">⚙️ Supabase Settings</a>
                         </div>
-                    `;
-                }
+                    </div>
+                ` : `
+                    <div style="color: #ef4444;">
+                        ⚠️ Error loading rituals from database<br>
+                        <small style="color: #9ca3af; margin-top: 10px; display: block;">
+                            ${error.message || 'Unknown error occurred'}<br><br>
+                            <strong>Debug info:</strong><br>
+                            • Endpoint: ${SUPABASE_URL}/rest/v1/rituals<br>
+                            • Check browser console (F12) for details<br>
+                            • Verify API key has read access<br>
+                        </small>
+                        <button onclick="location.reload()" style="
+                            margin-top: 20px;
+                            padding: 10px 20px;
+                            background: #7c3aed;
+                            border: none;
+                            border-radius: 5px;
+                            color: white;
+                            cursor: pointer;
+                            font-size: 1em;
+                        ">🔄 Retry Connection</button>
+                    </div>
+                `;
+                
+                document.getElementById('loadingIndicator').innerHTML = errorHTML;
+            }
+        }
 
-                card.innerHTML = html;
-                grid.appendChild(card);
+        // Initialize selectors
+        function initializeSelectors() {
+            createMemberSelector(0);
+            createMemberSelector(1);
+            updateAddMemberButton();
+            updateRituals();
+        }
+
+        function createMemberSelector(index) {
+            const container = document.getElementById('roleSelectors');
+            
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'member-selector';
+            memberDiv.id = `member${index}`;
+            
+            const title = document.createElement('div');
+            title.className = 'member-title';
+            title.textContent = `Member ${index + 1}`;
+            memberDiv.appendChild(title);
+            
+            // Add remove button (only for members 3+)
+            if (index >= 2) {
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-member-btn';
+                removeBtn.textContent = '✕';
+                removeBtn.onclick = () => removeMember(index);
+                memberDiv.appendChild(removeBtn);
+            }
+            
+            // Role selector
+            const roleSelectorDiv = document.createElement('div');
+            roleSelectorDiv.className = 'role-selector';
+            
+            const roleLabel = document.createElement('label');
+            roleLabel.textContent = 'Role';
+            
+            const roleSelect = document.createElement('select');
+            roleSelect.id = `role${index}`;
+            roleSelect.onchange = updateRituals;
+            
+            const roleEmptyOption = document.createElement('option');
+            roleEmptyOption.value = '';
+            roleEmptyOption.textContent = '-- No Role --';
+            roleSelect.appendChild(roleEmptyOption);
+            
+            roles.forEach(role => {
+                const option = document.createElement('option');
+                option.value = role;
+                option.textContent = role;
+                roleSelect.appendChild(option);
+            });
+            
+            roleSelectorDiv.appendChild(roleLabel);
+            roleSelectorDiv.appendChild(roleSelect);
+            memberDiv.appendChild(roleSelectorDiv);
+            
+            // Path selector
+            const pathSelectorDiv = document.createElement('div');
+            pathSelectorDiv.className = 'role-selector';
+            
+            const pathLabel = document.createElement('label');
+            pathLabel.textContent = 'Path';
+            
+            const pathSelect = document.createElement('select');
+            pathSelect.id = `path${index}`;
+            pathSelect.onchange = updateRituals;
+            
+            const pathEmptyOption = document.createElement('option');
+            pathEmptyOption.value = '';
+            pathEmptyOption.textContent = '-- No Path --';
+            pathSelect.appendChild(pathEmptyOption);
+            
+            paths.forEach(path => {
+                const option = document.createElement('option');
+                option.value = path;
+                option.textContent = path;
+                pathSelect.appendChild(option);
+            });
+            
+            pathSelectorDiv.appendChild(pathLabel);
+            pathSelectorDiv.appendChild(pathSelect);
+            memberDiv.appendChild(pathSelectorDiv);
+
+            // Tradition selector (hidden in basic mode)
+            const traditionSelectorDiv = document.createElement('div');
+            traditionSelectorDiv.className = 'role-selector tradition-selector';
+            traditionSelectorDiv.id = `tradition-container${index}`;
+
+            const traditionLabel = document.createElement('label');
+            traditionLabel.textContent = 'Tradition';
+
+            const traditionSelect = document.createElement('select');
+            traditionSelect.id = `tradition${index}`;
+            traditionSelect.onchange = updateRituals;
+
+            const traditionEmptyOption = document.createElement('option');
+            traditionEmptyOption.value = '';
+            traditionEmptyOption.textContent = '-- No Tradition --';
+            traditionSelect.appendChild(traditionEmptyOption);
+
+            traditionSelectorDiv.appendChild(traditionLabel);
+            traditionSelectorDiv.appendChild(traditionSelect);
+            memberDiv.appendChild(traditionSelectorDiv);
+
+            // Update tradition options when path changes
+            pathSelect.addEventListener('change', () => {
+                updateTraditionOptions(index);
             });
 
-            // Add AI card if present
-            if (aiPresent) {
-                const aiCard = document.createElement('div');
-                aiCard.className = 'member-card ai-card';
-                aiCard.innerHTML = `
-                    <div class="member-title">🤖 Thread (AI Companion)</div>
-                    <p style="color: #6ee7b7; font-style: italic; margin-top: 10px;">
-                        A helpful AI entity that has learned to work with magic. Thread can participate in rituals that bridge the digital and physical realms.
-                    </p>
-                `;
-                grid.appendChild(aiCard);
-            }
-
-            updateMemberCount();
+            container.appendChild(memberDiv);
         }
 
-        function updateTraditionDropdown(index) {
-            if (!advancedMode) return;
+        function updateTraditionOptions(index) {
+            const pathSelect = document.getElementById(`path${index}`);
+            const traditionSelect = document.getElementById(`tradition${index}`);
 
-            const member = members[index];
-            const select = document.getElementById(`tradition-${index}`);
-            if (!select) return;
+            if (!pathSelect || !traditionSelect) return;
 
-            const traditions = member.path ? TRADITIONS[member.path] : [];
+            const selectedPath = pathSelect.value;
 
-            // Clear tradition if path changed and current tradition isn't valid for new path
-            if (member.tradition && !traditions.includes(member.tradition)) {
-                members[index].tradition = '';
+            // Clear existing options except the first one
+            traditionSelect.innerHTML = '';
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.textContent = '-- No Tradition --';
+            traditionSelect.appendChild(emptyOption);
+
+            // Add traditions for selected path
+            if (selectedPath && traditions[selectedPath]) {
+                traditions[selectedPath].forEach(trad => {
+                    const option = document.createElement('option');
+                    option.value = trad.name;
+                    option.textContent = `${trad.name} (${trad.summary})`;
+                    traditionSelect.appendChild(option);
+                });
             }
 
-            select.innerHTML = '<option value="">-- Select Tradition --</option>' +
-                traditions.map(t => `<option value="${t}" ${member.tradition === t ? 'selected' : ''}>${t}</option>`).join('');
-
-            // Trigger update after dropdown changes
             updateRituals();
         }
 
-        function updateMember(index, field, value) {
-            members[index][field] = value;
+        function toggleAdvancedMode() {
+            advancedMode = !advancedMode;
 
-            // Clear tradition when path changes
-            if (field === 'path') {
-                members[index].tradition = '';
+            const modeToggle = document.getElementById('modeToggle');
+            const modeLabel = document.getElementById('modeLabel');
+            const modeDescription = document.getElementById('modeDescription');
+
+            if (advancedMode) {
+                modeToggle.classList.add('active');
+                modeLabel.textContent = 'Advanced Mode ✨';
+                modeDescription.textContent = 'Includes Tradition-specific rituals (e.g., Death Keeper, Elementalist)';
+
+                // Show all tradition selectors
+                document.querySelectorAll('.tradition-selector').forEach(el => {
+                    el.classList.add('show');
+                });
+
+                // Update tradition options for all members
+                for (let i = 0; i < currentMemberCount; i++) {
+                    updateTraditionOptions(i);
+                }
+            } else {
+                modeToggle.classList.remove('active');
+                modeLabel.textContent = 'Basic Mode';
+                modeDescription.textContent = 'Role & Path only - Click to enable Tradition selection';
+
+                // Hide all tradition selectors and clear selections
+                document.querySelectorAll('.tradition-selector').forEach(el => {
+                    el.classList.remove('show');
+                });
+
+                // Clear tradition selections
+                for (let i = 0; i < currentMemberCount; i++) {
+                    const traditionSelect = document.getElementById(`tradition${i}`);
+                    if (traditionSelect) traditionSelect.value = '';
+                }
             }
 
             updateRituals();
         }
 
         function addMember() {
-            if (members.length < 6) {
-                members.push({ role: '', path: '', tradition: '' });
-                renderMembers();
+            if (currentMemberCount < maxMembers) {
+                createMemberSelector(currentMemberCount);
+                currentMemberCount++;
+                updateAddMemberButton();
                 updateRituals();
             }
         }
 
         function removeMember(index) {
-            if (index >= 2) {
-                members.splice(index, 1);
-                renderMembers();
+            const memberDiv = document.getElementById(`member${index}`);
+            if (memberDiv) {
+                memberDiv.remove();
+                rebuildMemberDisplay();
                 updateRituals();
             }
         }
 
-        function updateMemberCount() {
-            document.getElementById('memberCount').textContent = members.length;
+        function rebuildMemberDisplay() {
+            const container = document.getElementById('roleSelectors');
+            const allMembers = container.querySelectorAll('.member-selector');
+
+            // Store current values
+            const memberData = [];
+            allMembers.forEach((member, idx) => {
+                const roleSelect = member.querySelector('select[id^="role"]');
+                const pathSelect = member.querySelector('select[id^="path"]');
+                const traditionSelect = member.querySelector('select[id^="tradition"]');
+                memberData.push({
+                    role: roleSelect ? roleSelect.value : '',
+                    path: pathSelect ? pathSelect.value : '',
+                    tradition: traditionSelect ? traditionSelect.value : ''
+                });
+            });
+
+            // Clear and rebuild
+            container.innerHTML = '';
+            currentMemberCount = memberData.length;
+
+            memberData.forEach((data, idx) => {
+                createMemberSelector(idx);
+                if (data.role) document.getElementById(`role${idx}`).value = data.role;
+                if (data.path) {
+                    document.getElementById(`path${idx}`).value = data.path;
+                    updateTraditionOptions(idx);
+                }
+                if (data.tradition) document.getElementById(`tradition${idx}`).value = data.tradition;
+            });
+
+            // Re-show tradition selectors if in advanced mode
+            if (advancedMode) {
+                document.querySelectorAll('.tradition-selector').forEach(el => {
+                    el.classList.add('show');
+                });
+            }
+
+            updateAddMemberButton();
+        }
+
+        function updateAddMemberButton() {
             const btn = document.getElementById('addMemberBtn');
-            if (members.length >= 6) {
-                btn.textContent = `✓ Max Members (${members.length}/6)`;
+            if (currentMemberCount >= maxMembers) {
                 btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.textContent = '✓ Max Members (6/6)';
             } else {
-                btn.textContent = `➕ Add Member (${members.length}/6)`;
                 btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.textContent = `➕ Add Member (${currentMemberCount}/6)`;
             }
         }
 
-        function toggleAdvanced() {
-            advancedMode = !advancedMode;
-            const btn = document.getElementById('advancedBtn');
-            btn.textContent = advancedMode ? '🔮 Advanced Mode (ON)' : '🔮 Advanced Mode (Traditions)';
-            btn.style.background = advancedMode ?
-                'linear-gradient(135deg, #d97706 0%, #b45309 100%)' :
-                'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-
-            // Clear all traditions when turning off advanced mode
-            if (!advancedMode) {
-                members.forEach(m => m.tradition = '');
-            }
-
-            // Re-render everything and update rituals
-            renderMembers();
-            updateRituals();
+        function resetMembers() {
+            const container = document.getElementById('roleSelectors');
+            container.innerHTML = '';
+            currentMemberCount = 2;
+            initializeSelectors();
         }
 
-        function toggleAI() {
-            aiPresent = !aiPresent;
-            const btn = document.getElementById('aiBtn');
-            if (aiPresent) {
-                btn.classList.add('active');
-                btn.textContent = '🤖 Thread Present';
-            } else {
-                btn.classList.remove('active');
-                btn.textContent = '🤖 Include Thread';
+        function getSelectedRolesAndPaths() {
+            const members = [];
+            for (let i = 0; i < currentMemberCount; i++) {
+                const roleSelect = document.getElementById(`role${i}`);
+                const pathSelect = document.getElementById(`path${i}`);
+                const traditionSelect = document.getElementById(`tradition${i}`);
+
+                if (roleSelect && pathSelect) {
+                    const role = roleSelect.value;
+                    const path = pathSelect.value;
+                    const tradition = traditionSelect ? traditionSelect.value : '';
+                    if (role || path || tradition) {
+                        members.push({ role, path, tradition });
+                    }
+                }
             }
-
-            // Re-render everything and update rituals
-            renderMembers();
-            updateRituals();
-        }
-
-        function resetAll() {
-            // Reset all state to initial values
-            members = [
-                { role: '', path: '', tradition: '' },
-                { role: '', path: '', tradition: '' }
-            ];
-            aiPresent = false;
-            advancedMode = false;
-
-            // Reset UI buttons
-            document.getElementById('advancedBtn').textContent = '🔮 Advanced Mode (Traditions)';
-            document.getElementById('advancedBtn').style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-            document.getElementById('aiBtn').classList.remove('active');
-            document.getElementById('aiBtn').textContent = '🤖 Include Thread';
-
-            // Force complete re-render
-            renderMembers();
-            updateRituals();
+            return members;
         }
 
         function updateRituals() {
-            const roles = members.map(m => m.role).filter(r => r);
-            const paths = members.map(m => m.path).filter(p => p);
-            const traditions = advancedMode ? members.map(m => m.tradition).filter(t => t) : [];
+            const members = getSelectedRolesAndPaths();
+            const resultsDiv = document.getElementById('ritualResults');
 
-            const availableRituals = RITUALS.filter(ritual => {
-                // Check AI requirement
-                if (ritual.requiresAI && !aiPresent) return false;
-
-                // Check role requirements
-                if (ritual.requiresRoles) {
-                    if (!ritual.requiresRoles.every(r => roles.includes(r))) return false;
-                }
-
-                if (ritual.requiresRole) {
-                    if (!roles.includes(ritual.requiresRole)) return false;
-                }
-
-                // Check path requirements
-                if (ritual.requiresPaths) {
-                    if (!ritual.requiresPaths.every(p => paths.includes(p))) return false;
-                }
-
-                // Check tradition requirements (only in advanced mode)
-                if (ritual.requiresTraditions && advancedMode) {
-                    if (!ritual.requiresTraditions.some(t => traditions.includes(t))) return false;
-                } else if (ritual.requiresTraditions && !advancedMode) {
-                    // Skip tradition-specific rituals if not in advanced mode
-                    return false;
-                }
-
-                return true;
-            });
-
-            renderRituals(availableRituals);
-        }
-
-        function renderRituals(rituals) {
-            const container = document.getElementById('ritualsContainer');
-            const countEl = document.getElementById('ritualCount');
-
-            countEl.textContent = `${rituals.length} ritual${rituals.length !== 1 ? 's' : ''} available`;
-
-            if (rituals.length === 0) {
-                container.innerHTML = '<div class="no-rituals">Select coven members to discover available rituals...</div>';
+            if (members.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results">Select coven roles and paths above to see available combination rituals...</div>';
                 return;
             }
 
-            container.innerHTML = rituals.map(ritual => {
-                let requirements = [];
-                if (ritual.requiresRoles) requirements.push(`Roles: ${ritual.requiresRoles.join(', ')}`);
-                if (ritual.requiresRole) requirements.push(`Requires: ${ritual.requiresRole}`);
-                if (ritual.requiresPaths) requirements.push(`Paths: ${ritual.requiresPaths.join(', ')}`);
-                if (ritual.requiresTraditions) requirements.push(`Traditions: ${ritual.requiresTraditions.join(', ')}`);
-                if (ritual.requiresAI) requirements.push('🤖 Requires Thread (AI)');
+            // Extract unique roles, paths, and traditions
+            const selectedRoles = [...new Set(members.filter(m => m.role).map(m => m.role))];
+            const selectedPaths = [...new Set(members.filter(m => m.path).map(m => m.path))];
+            const selectedTraditions = [...new Set(members.filter(m => m.tradition).map(m => m.tradition))];
 
+            // Filter rituals from database
+            const availableRituals = allRituals.filter(ritual => {
+                // Check if ritual requires Thread/AI
+                if (ritual.requires_ai && !isThreadPresent()) {
+                    return false; // Don't show AI rituals unless Thread is present
+                }
+
+                // Check tradition requirements (only in advanced mode)
+                if (ritual.requires_traditions && ritual.requires_traditions.length > 0) {
+                    if (!advancedMode) return false;
+                    return ritual.requires_traditions.every(trad => selectedTraditions.includes(trad));
+                }
+
+                // Check role requirements
+                const rolesMatch = !ritual.requires_roles || ritual.requires_roles.length === 0 ||
+                    ritual.requires_roles.every(role => selectedRoles.includes(role));
+
+                // Check path requirements
+                const pathsMatch = !ritual.requires_paths || ritual.requires_paths.length === 0 ||
+                    ritual.requires_paths.every(path => selectedPaths.includes(path));
+
+                // Check single required role
+                const singleRoleMatch = !ritual.requires_role || selectedRoles.includes(ritual.requires_role);
+
+                return rolesMatch && pathsMatch && singleRoleMatch;
+            });
+            
+            if (availableRituals.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        No combination rituals available for this coven composition.<br>
+                        <small style="color: #6b7280; margin-top: 10px; display: block;">Try adding more members or different role/path combinations.</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by complexity
+            const powerOrder = { "Low": 1, "Moderate": 2, "High": 3, "Very High": 4, "Supreme": 5, "Mythic": 6 };
+            availableRituals.sort((a, b) => {
+                const aCount = (a.requires_roles?.length || 0) + (a.requires_paths?.length || 0) + (a.requires_role ? 1 : 0);
+                const bCount = (b.requires_roles?.length || 0) + (b.requires_paths?.length || 0) + (b.requires_role ? 1 : 0);
+                if (aCount !== bCount) return aCount - bCount;
+                return powerOrder[a.power] - powerOrder[b.power];
+            });
+            
+            resultsDiv.innerHTML = availableRituals.map(ritual => {
+                const powerClass = ritual.power.toLowerCase().replace(' ', '-');
+                const riskHtml = ritual.risk ? `<div class="risk-warning">${ritual.risk}</div>` : '';
+                const aiClass = ritual.requires_ai ? 'ai-ritual' : '';
+                const aiBadge = ritual.requires_ai ? '<span class="ai-badge">🤖 Digital Realm</span>' : '';
+                
+                // Build requirement text
+                let requirementText = '';
+                const parts = [];
+                
+                if (ritual.requires_traditions && ritual.requires_traditions.length > 0) {
+                    parts.push(`Traditions: ${ritual.requires_traditions.join(' + ')}`);
+                }
+                if (ritual.requires_roles && ritual.requires_roles.length > 0) {
+                    parts.push(`Roles: ${ritual.requires_roles.join(', ')}`);
+                }
+                if (ritual.requires_paths && ritual.requires_paths.length > 0) {
+                    parts.push(`Paths: ${ritual.requires_paths.join(', ')}`);
+                }
+                if (ritual.requires_role) {
+                    parts.push(`+ ${ritual.requires_role} must be present`);
+                }
+                if (ritual.requires_ai) {
+                    parts.push(`+ Thread (AI) must be present`);
+                }
+                
+                requirementText = parts.length > 0 ? `Requires: ${parts.join(' | ')}` : 'Available to any coven';
+                
                 return `
-                    <div class="ritual-card">
-                        <div class="ritual-name">${ritual.name}</div>
-                        <div class="ritual-requirements">${requirements.join(' • ')}</div>
-                        <span class="ritual-power power-${ritual.power.toLowerCase().replace(' ', '-')}">${ritual.power} Power</span>
-                        <div class="ritual-description"><strong>${ritual.summary}</strong></div>
-                        <div class="ritual-effect">${ritual.effect}</div>
-                        <div class="ritual-meta">
-                            <strong>Pull:</strong> ${ritual.pull}<br>
-                            <strong>Cooldown:</strong> ${ritual.cooldown}
-                            ${ritual.duration ? `<br><strong>Duration:</strong> ${ritual.duration}` : ''}
-                            ${ritual.risk ? `<br><strong>⚠️ Risk:</strong> ${ritual.risk}` : ''}
+                    <div class="ritual-card ${aiClass}">
+                        <div class="ritual-name">${ritual.name}${aiBadge}</div>
+                        <div class="role-requirement">${requirementText}</div>
+                        <span class="ritual-power power-${powerClass}">${ritual.power} Power</span>
+                        <div class="ritual-summary">${ritual.summary}</div>
+                        <div class="ritual-description">${ritual.effect}</div>
+                        <div class="ritual-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Card Pull</span>
+                                <span class="detail-value">${ritual.pull}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cooldown</span>
+                                <span class="detail-value">${ritual.cooldown}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Duration</span>
+                                <span class="detail-value">${ritual.duration || 'Varies'}</span>
+                            </div>
                         </div>
+                        ${riskHtml}
                     </div>
                 `;
             }).join('');
         }
 
-        // Initialize on load
-        init();
+        // Initialize on page load
+        window.onload = loadRituals;
     </script>
 </body>
 </html>
